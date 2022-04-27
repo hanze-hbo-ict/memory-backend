@@ -17,15 +17,15 @@ use Doctrine\ORM\Mapping\JoinTable;
 
 #[Entity]
 #[ApiResource]
-class User implements \JsonSerializable {
+class Player implements \JsonSerializable {
     #[Column(unique:true)] #[Id] #[GeneratedValue] private int $id;
     #[Column] public string $name;
-    #[Column] public string $email; //unique:true)
+    #[Column] public string $email;
     #[Column] public string $password_hash;
-    
+
     #[ManyToMany(targetEntity:Game::class, cascade: ["persist"])]
-    #[JoinTable(name:"users_games")]
-    #[JoinColumn(name: "user_id", referencedColumnName: "id")]
+    #[JoinTable(name:"player_games")]
+    #[JoinColumn(name: "player_id", referencedColumnName: "id")]
     #[InverseJoinColumn(name: "game_id", referencedColumnName: "id", unique:true)]
     private $games;
 
@@ -50,8 +50,6 @@ class User implements \JsonSerializable {
         foreach($this->games as $g) {
             $t[] = $g->jsonSerialize();
         }
-
-
         return array(
             'id' => $this->id,
             'name' => $this->name,
@@ -61,10 +59,4 @@ class User implements \JsonSerializable {
     }
 
     public function getId(): int { return $this->id; }
-    public function getName(): string { return $this->name; }
-    public function setName(string $name): void { $this->name = $name; }
-    public function getEmail(): string { return $this->email; }
-    public function setEmail(string $email): void { $this->email = $email; }
-    public function getPasswordHash(): string { return $this->password_hash; }
-    public function setPasswordHash(string $password_hash): void { $this->password_hash = $password_hash; }
 }

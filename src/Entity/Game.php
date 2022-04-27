@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\ManyToMany;
 use ApiPlatform\Core\Annotation\ApiResource;
 
@@ -25,20 +24,20 @@ class Game implements \JsonSerializable {
     // zie
     // https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
 
-    #[ManyToMany(targetEntity: "User", mappedBy: "games")]
-    private Collection $users;
+    #[ManyToMany(targetEntity: Player::class, mappedBy: "games")]
+    private Collection $player;
 
-    public function __construct(User $user,  float $score)
+    public function __construct(Player $player, float $score)
     {
-        $this->users = new ArrayCollection();
-        $this->users[] = $user;
+        $this->player = new ArrayCollection();
+        $this->player[] = $player;
         $this->date = new \DateTime('now');
         $this->score = $score;
     }
 
     public function getId(): int { return $this->id; }
 
-    public function jsonSerialize() {
+    public function jsonSerialize():mixed {
         return array(
             'date' => $this->date,
             'score' => $this->score,

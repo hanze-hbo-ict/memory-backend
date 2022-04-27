@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
+use App\Entity\Player;
 use App\Entity\Game;
 
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,17 +26,16 @@ class GameController extends AbstractController {
         return new JsonResponse($game);
     }
 
+
     #[Route('/save', methods:['POST'])]
     public function saveGame(ManagerRegistry $doctrine):Response {
         $params = json_decode(Request::createFromGlobals()->getContent(), true);
         $em = $doctrine->getManager();
-        $user = $em->find(User::class, $params['id']);
+        $player = $em->find(Player::class, $params['id']);
 
-        $user->addGame(new Game($user, $params['score']));
-        $em->persist($user);
+        $player->addGame(new Game($player, $params['score']));
+        $em->persist($player);
         $em->flush();
-        return new JsonResponse($user);
+        return new JsonResponse($player);
     }
-
-
 }
