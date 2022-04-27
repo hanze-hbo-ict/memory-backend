@@ -11,11 +11,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-
+#[Route("/user")]
 class UserController extends AbstractController {
     #[Route('/')]
     public function index():Response {
         return new Response("UserController");
+    }
+
+    #[Route('/{id}', methods:['GET'])]
+    public function getUserById($id, ManagerRegistry $doctrine):Response {
+        $em = $doctrine->getManager();
+        $user = $em->find(User::class, $id);
+        return new JsonResponse($user);
     }
 
     #[Route('/login')]
@@ -30,7 +37,7 @@ class UserController extends AbstractController {
         }
     }
 
-    #[Route('/register')]
+    #[Route('/register', methods: ['POST'])]
     public function register(ManagerRegistry $doctrine): Response {
         $params = json_decode(Request::createFromGlobals()->getContent(), true);
         $pw = password_hash($params['password'], PASSWORD_DEFAULT);
@@ -38,6 +45,6 @@ class UserController extends AbstractController {
         $em = $doctrine->getManager();
         $em->persist($user);
         $em->flush();
-        return new Response(($user->getId()));
+        return new Response($user->getId());
     }
 }
