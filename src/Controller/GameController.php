@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Twig\Error\Error;
 
 #[Route("/game")]
 class GameController extends AbstractController {
@@ -23,19 +24,25 @@ class GameController extends AbstractController {
     public function getGame($id, ManagerRegistry $doctrine):Response {
         $em = $doctrine->getManager();
         $game = $em->find(Game::class, $id);
-        return new JsonResponse($game);
+        if ($game) return new JsonResponse($game);
+        else return new Response('', 404);
     }
 
 
     #[Route('/save', methods:['POST'])]
     public function saveGame(ManagerRegistry $doctrine):Response {
-        $params = json_decode(Request::createFromGlobals()->getContent(), true);
-        $em = $doctrine->getManager();
-        $player = $em->find(Player::class, $params['id']);
+        set_error_handler(fn() => throw new \ErrorException());
+        try {
+            $params = json_decode(Request::createFromGlobals()->getContent(), true);
+            $em = $doctrine->getManager();
+            $player = $em->find(Player::class, $params['id']);
 
-        $player->addGame(new Game($player, $params['score']));
-        $em->persist($player);
-        $em->flush();
-        return new JsonResponse($player);
+            $player->addGame(new Game($player, $params['score']));
+            $em->persist($player);
+            $em->flush();
+            return new JsonResponse($player);
+        } catch (\ErrorException $e) {
+            return new Response('', 400);
+        }
     }
 }

@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping\JoinTable;
 #[Entity]
 #[ApiResource]
 class Player implements \JsonSerializable {
-    #[Column(unique:true)] #[Id] #[GeneratedValue] private int $id;
+    #[Column(unique:true)] #[Id] #[GeneratedValue] public int $id;
     #[Column] public string $name;
     #[Column] public string $email;
     #[Column] public string $password_hash;
@@ -57,6 +57,4 @@ class Player implements \JsonSerializable {
             'games' => $t
         );
     }
-
-    public function getId(): int { return $this->id; }
 }
