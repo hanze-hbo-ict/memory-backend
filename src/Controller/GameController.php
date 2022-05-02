@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\Constraints\Json;
 use Twig\Error\Error;
 
 #[Route("/game")]
@@ -18,6 +19,13 @@ class GameController extends AbstractController {
     #[Route('/')]
     public function index():Response {
         return new Response("GameController");
+    }
+
+    #[Route('/all',methods:['GET'])]
+    public function getAllGames(ManagerRegistry $doctrine):Response {
+        $em = $doctrine->getManager();
+        $game_repo = $em->getRepository(Game::class);
+        return new JsonResponse($game_repo->findAll());
     }
 
     #[Route("/{id}", requirements: ['id' => '\d+'], methods: ['GET'])]

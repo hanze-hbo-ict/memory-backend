@@ -9,3 +9,6 @@
 /vendor/
 ###< symfony/framework-bundle ###
 .idea
+*.swl
+err.html
+*test*

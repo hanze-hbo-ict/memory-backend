@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Player;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
+use MongoDB\Driver\Manager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +19,13 @@ class PlayerController extends AbstractController {
     #[Route('/')]
     public function index():Response {
         return new Response("PlayerController");
+    }
+
+    #[Route('/all',methods:['GET'])]
+    public function getAllPlayers(ManagerRegistry $doctrine):Response {
+        $em = $doctrine->getManager();
+        $user_repo = $em->getRepository(Player::class);
+        return new JsonResponse($user_repo->findAll());
     }
 
     #[Route('/{id}', methods:['GET'])]
