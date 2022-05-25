@@ -14,12 +14,14 @@ use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Entity]
 #[ApiResource]
-class Player implements \JsonSerializable {
+class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedUserInterface {
     #[Column(unique:true)] #[Id] #[GeneratedValue] public int $id;
-    #[Column] public string $name;
+    #[Column(name:'name')] public string $username;
     #[Column] public string $email;
     #[Column] public string $password_hash;
 
@@ -31,7 +33,7 @@ class Player implements \JsonSerializable {
 
     public function __construct(string $name, string $email, string $password_hash)
     {
-        $this->name = $name;
+        $this->username = $name;
         $this->email = $email;
         $this->password_hash = $password_hash;
         $this->games = new ArrayCollection();
@@ -52,9 +54,29 @@ class Player implements \JsonSerializable {
         }
         return array(
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => $this->username,
             'email' => $this->email,
             'games' => $t
         );
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password_hash;
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
     }
 }

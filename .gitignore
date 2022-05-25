@@ -12,3 +12,10 @@
 *.swl
 err.html
 *test*
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+
+.DS_Store
+notities.txt

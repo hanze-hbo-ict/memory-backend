@@ -21,19 +21,27 @@ class PlayerController extends AbstractController {
         return new Response("PlayerController");
     }
 
-    #[Route('/all',methods:['GET'])]
+    #[Route('/all', methods:['GET'])]
     public function getAllPlayers(ManagerRegistry $doctrine):Response {
         $em = $doctrine->getManager();
         $user_repo = $em->getRepository(Player::class);
         return new JsonResponse($user_repo->findAll());
     }
 
-    #[Route('/{id}', methods:['GET'])]
+    #[Route('/{id}',  requirements: ['id' => '\d+'], methods:['GET'])]
     public function getPlayerById($id, ManagerRegistry $doctrine):Response {
         $em = $doctrine->getManager();
         $user = $em->find(Player::class, $id);
         if ($user) return new JsonResponse($user);
         else return new Response('', 404);
+    }
+
+    #[Route('/test')]
+    public function test():Response {
+        $hash = password_hash("totempaal", PASSWORD_DEFAULT);
+        $user = new Player('Charles', 'charles@charles', $hash);
+        $token = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
+        return new JsonResponse(['token' => $token]);
     }
 
     #[Route('/login')]
