@@ -22,14 +22,6 @@ class AdminController extends AbstractController
         return new JsonResponse($aggregate);
     }
 
-    #[Route('/scores', methods: ['GET'])]
-    public function scores(ManagerRegistry $doctrine)
-    {
-        $em = $doctrine->getManager();
-        $scores = $em->createQuery("select p.username, sum(g.score) as score from App\Entity\Player p 
-                    join p.games g group by p.username")->getArrayResult();
-        return new JsonResponse($scores);
-    }
 
     #[Route('/players', methods: ['GET'])]
     public function players(ManagerRegistry $doctrine)

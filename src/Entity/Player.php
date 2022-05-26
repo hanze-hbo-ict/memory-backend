@@ -85,7 +85,9 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
 
     public function getRoles(): array
     {
-        return ['ROLE_USER'];
+        $roles = ['ROLE_USER'];
+        if ($this->username=='Henk') $roles[] = 'ROLE_ADMIN';
+        return $roles;
     }
 
     public function eraseCredentials()

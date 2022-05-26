@@ -22,6 +22,15 @@ class DefaultController extends AbstractController {
         return new Response('');
     }
 
+    #[Route('/scores', methods: ['GET'])]
+    public function scores(ManagerRegistry $doctrine)
+    {
+        $em = $doctrine->getManager();
+        $scores = $em->createQuery("select p.username, sum(g.score) as score from App\Entity\Player p 
+                    join p.games g group by p.username")->getArrayResult();
+        return new JsonResponse($scores);
+    }
+
     #[Route('/register', methods: ['POST'])]
     public function register(ManagerRegistry $doctrine): Response {
         set_error_handler(fn() => throw new \ErrorException());
