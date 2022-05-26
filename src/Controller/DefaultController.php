@@ -19,12 +19,7 @@ class DefaultController extends AbstractController {
 
     #[Route('/api/login_check', methods:['POST'])]
     public function login():Response {
-        return new Response('hiuhA');
-    }
-
-    #[Route('top/{number}', requirements:['number'=>'\d+'], methods:['GET'])]
-    public function ranking($number, ManagerRegistry $doctrine) {
-        return new Response('Ranking ' . $number);
+        return new Response('');
     }
 
     #[Route('/register', methods: ['POST'])]

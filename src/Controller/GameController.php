@@ -45,7 +45,7 @@ class GameController extends AbstractController {
             $em = $doctrine->getManager();
             $player = $em->find(Player::class, $params['id']);
 
-            $player->addGame(new Game($player, $params['score']));
+            $player->addGame(new Game($player, $params));
             $em->persist($player);
             $em->flush();
             return new JsonResponse($player);

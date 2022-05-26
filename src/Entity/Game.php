@@ -22,13 +22,13 @@ class Game implements \JsonSerializable {
     #[Column] public float $score;
 
     // optional string for api used in this game
-    #[Column(nullable:true)] public string $api;
+    #[Column(nullable:true)] public string $api = '';
 
     //optional column for color of closed cards in this game
-    #[Column(nullable:true)] public string $color_closed;
+    #[Column(nullable:true)] public string $color_closed = '';
 
     //optional column for color of found cards in this game
-    #[Column(nullable:true)] public string $color_found;
+    #[Column(nullable:true)] public string $color_found = '';
 
     // Zo doe je dus unidirectionele OneToMany in doctrine...
     // zie
@@ -37,12 +37,15 @@ class Game implements \JsonSerializable {
     #[ManyToMany(targetEntity: Player::class, mappedBy: "games")]
     private Collection $player;
 
-    public function __construct(Player $player, float $score)
+    public function __construct(Player $player, mixed $params)
     {
         $this->player = new ArrayCollection();
         $this->player[] = $player;
         $this->date = new \DateTime('now');
-        $this->score = $score;
+        $this->score = $params['score'];
+        $this->api = $params['api'] ?? '';
+        $this->color_found = $params['color_found'] ?? '';
+        $this->color_closed = $params['color_closed'] ?? '';
     }
 
     public function getId(): int { return $this->id; }

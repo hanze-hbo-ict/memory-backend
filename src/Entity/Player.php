@@ -24,6 +24,9 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
     #[Column(name:'name')] public string $username;
     #[Column] public string $email;
     #[Column] public string $password_hash;
+    #[Column(nullable:true)] public string $preferred_api = '';
+    #[Column(nullable:true)] public string $preferred_color_closed = '';
+    #[Column(nullable:true)] public string $preferred_color_found = '';
 
     #[ManyToMany(targetEntity:Game::class, cascade: ["persist"])]
     #[JoinTable(name:"player_games")]
@@ -43,20 +46,35 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
         $this->games[] = $game;
     }
 
+    public function getPreferences():array {
+        return [
+            'preferred_api' => $this->preferred_api,
+            'color_closed' => $this->preferred_color_closed,
+            'color_found' => $this->preferred_color_found
+        ];
+    }
+
+    public function setPreferences(array $params) {
+        $this->preferred_api = $params['api'];
+        $this->preferred_color_found = $params['color_found'];
+        $this->preferred_color_closed = $params['color_closed'];
+    }
+
     public function getGames():Collection {
-        return $this->games;
+        $t = new ArrayCollection();
+        foreach($this->games as $g) {
+            $t->add($g->jsonSerialize());
+        }
+        return $t;
     }
 
     public function jsonSerialize():mixed {
-        $t = [];
-        foreach($this->games as $g) {
-            $t[] = $g->jsonSerialize();
-        }
+        $games = $this->getGames()->toArray();
         return array(
             'id' => $this->id,
             'name' => $this->username,
             'email' => $this->email,
-            'games' => $t
+            'games' => $games
         );
     }
 

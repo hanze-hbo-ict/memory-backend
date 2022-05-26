@@ -13,12 +13,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 
-#[Route("/player/{id}", requirements:['id'=>'\d+'])]
+#[Route("/player/")]
 class PlayerController extends AbstractController {
 
-    #[Route('')]
-    public function test():Response {
-        return new Response("hallo");
+    #[Route('{id}', requirements:['id'=>'\d+'])]
+    public function getUserData($id, ManagerRegistry $doctrine):Response {
+        $em = $doctrine->getManager();
+        $user = $em->find(Player::class, $id);
+        if ($user) return new JsonResponse($user);
+        else return new Response('', 404);
     }
 
     #[Route('/')]
@@ -26,25 +29,48 @@ class PlayerController extends AbstractController {
         return new Response("PlayerController");
     }
 
-    #[Route('/data', methods:['GET'])]
-    public function getPlayerData($id, ManagerRegistry $doctrine):Response {
-        return new JsonResponse('/user/id/data');
+    #[Route('{id}/games',  requirements:['id'=>'\d+'], methods:['GET'])]
+    public function getPlayerGames($id, ManagerRegistry $doctrine):Response {
+        $em = $doctrine->getManager();
+        $user = $em->find(Player::class, $id);
+        if ($user) return new JsonResponse($user->getGames()->toArray());
+        else return new Response('', 404);
     }
 
-    #[Route('/games', methods:['GET'])]
-    public function getPlayerGames($id, ManagerRegistery $doctrine):Response {
-        return new JsonResponse('/user/id/games');
+    #[Route('{id}/preferences', requirements:['id'=>'\d+'], methods:['GET', 'POST'])]
+    public function getPlayerPreferences($id, ManagerRegistry $doctrine):Response {
+        $em = $doctrine->getManager();
+        $user = $em->find(Player::class, $id);
+        if ($user) {
+            $request = Request::createFromGlobals();
+            if ($request->getMethod() == 'POST') {
+                $params = json_decode(Request::createFromGlobals()->getContent(), true);
+                $user->setPreferences($params);
+                $em->persist($user);
+                $em->flush();
+                return new JsonResponse('',204);
+            } else return new JsonResponse($user->getPreferences());
+        }
+
+        return new Response('', 404);
     }
 
-    #[Route('/preferences', methods:['GET', 'POST', 'PUT'])]
-    public function playerPreferences($id, ManagerRegister $doctrine):Response {
-        return new JsonResponse('/user/id/prefs');
-    }
-
-    #[Route('/email', methods:['GET', 'PUT'])]
+    #[Route('{id}/email', requirements:['id'=>'\d+'],  methods:['GET', 'PUT'])]
     public function playerEmail($id, ManagerRegistry $doctrine):Response {
-        return new JsonResponse('/user/id/email');
-    }
+        $em = $doctrine->getManager();
+        $user = $em->find(Player::class, $id);
+        if ($user) {
+            $request = Request::createFromGlobals();
+            if ($request->getMethod() == 'PUT') {
+                $params = json_decode(Request::createFromGlobals()->getContent(), true);
+                $user->email = $params['email'];
+                $em->persist($user);
+                $em->flush();
+                return new JsonResponse('', 204);
+            } else return new JsonResponse($user->email);
+        }
+
+        return new Response('', 404);    }
 
 
 }
