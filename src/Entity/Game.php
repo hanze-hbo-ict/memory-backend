@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\ManyToMany;
 use ApiPlatform\Core\Annotation\ApiResource;
+use phpDocumentor\Reflection\Types\True_;
 
 
 #[Entity]
@@ -19,6 +20,15 @@ class Game implements \JsonSerializable {
     #[Column(unique:true)] #[Id] #[GeneratedValue] private int $id;
     #[Column] public \DateTime $date;
     #[Column] public float $score;
+
+    // optional string for api used in this game
+    #[Column(nullable:true)] public string $api;
+
+    //optional column for color of closed cards in this game
+    #[Column(nullable:true)] public string $color_closed;
+
+    //optional column for color of found cards in this game
+    #[Column(nullable:true)] public string $color_found;
 
     // Zo doe je dus unidirectionele OneToMany in doctrine...
     // zie
@@ -41,6 +51,9 @@ class Game implements \JsonSerializable {
         return array(
             'date' => $this->date,
             'score' => $this->score,
+            'api' => $this->api,
+            'color_closed' => $this->color_closed,
+            'color_found' => $this->color_found
         );
     }
 }
