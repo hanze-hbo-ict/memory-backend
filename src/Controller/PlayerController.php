@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 
-#[Route("/player/")]
+#[Route("/api/player/")]
 class PlayerController extends AbstractController {
 
     #[Route('{id}', requirements:['id'=>'\d+'])]
