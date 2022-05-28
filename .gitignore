@@ -14,7 +14,9 @@ err.html
 *test*
 
 ###> lexik/jwt-authentication-bundle ###
-/config/jwt/*.pem
+### normaliter zou je deze sleutels NOOIT onder versiebeheer zetten
+### Om het runnen wat te vereenvoudigen hebben we dit nu wel gedaan
+### /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
 
 .DS_Store
