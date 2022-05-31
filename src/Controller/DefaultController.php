@@ -38,7 +38,7 @@ class DefaultController extends AbstractController {
         try {
             $params = json_decode(Request::createFromGlobals()->getContent(), true);
             $pw = password_hash($params['password'], PASSWORD_DEFAULT);
-            $player = new Player($params['name'], $params['email'], $pw);
+            $player = new Player($params['username'], $params['email'], $pw);
             $em = $doctrine->getManager();
             $em->persist($player);
             $em->flush();

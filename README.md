@@ -57,7 +57,7 @@ De applicatie heeft de volgende end-points. Ze spreken redelijk voor zich, maar 
 
 Methode en end-point | return value | omschrijving
 ----|----|----
-`GET /api/scores` |  200 Ok | Overzicht van de spelers en hun score (ongesorteerd)
+`GET /scores` |  200 Ok | Overzicht van de spelers en hun score (ongesorteerd)
 `POST /register` | 201 Created | Registeren van een speler
 " | 400 Illegal Request | Als de opgestuurde gegevens niet kloppen met het model
 `POST /api/login_check` | 200 Ok | Als de credentials kloppen met de speler, komt hier een JWT terug
