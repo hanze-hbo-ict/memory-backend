@@ -21,6 +21,15 @@ cd public
 php -S localhost:8000
 ```
 
+### Backend draaien met docker
+
+```shell
+# Bouwen en taggen image
+docker build . -t memory-backend
+# Runnen van docker image
+docker run -p 8000:8000 -d --name memory-backend memory-backend
+```
+
 __Let op__: om het runnen van de applicatie wat eenvoudiger te maken, hebben we zowel de private als de publieke sleutel in git gezet (in `config/jwt`). Dit is natuurlijk niet zoals het hoort, want je moet nooit je private sleuten in versiebeheer zetten. Je kunt natuurlijk altijd zelf een private en publieke sleutel maken, mocht je dat willen. Bekijk eventueel [deze documentatie](https://digitalfortress.tech/php/jwt-authentication-with-symfony/) om te zien hoe je één en ander helemaal goed opzet.
 
 ## Het vullen van de database
