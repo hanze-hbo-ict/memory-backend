@@ -17,6 +17,12 @@ class DefaultController extends AbstractController {
         return new Response('DefaultController');
     }
 
+    #[Route('/frontend', methods:['GET'])]
+    public function demo():Response {
+        $rv['date'] = date("F j, Y, g:i a");
+        return new JsonResponse($rv);
+    }
+
     #[Route('/api/login_check', methods:['POST'])]
     public function login():Response {
         return new Response('');

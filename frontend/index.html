@@ -1,0 +1,44 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend demo</title>
+
+    <style>
+        body {font-family: Arial, Helvetica, sans-serif;}
+        form {border: 3px solid #f1f1f1; text-align:center;}
+
+        input[type=text], input[type=password] { width: 100%; padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; box-sizing: border-box; }
+        button { background-color: #04AA6D; color: white; padding: 14px 20px; margin: 8px 0; border: none; cursor: pointer; width: 70%; }
+        button:hover { opacity: 0.8; }
+        .container { padding: 16px; }
+        #result { font-size:2rem; }
+    </style>
+</head>
+<body>
+
+    <h2>Frontend demo</h2>
+
+    <p>Om vanaf een frontend connectie te maken met deze backend is het noodzakelijk om de frontend in hetzelfde domein te hebben draaien als de backend; als je de frontend op een ander domein draait, of gewoon als bestand op je file-system opent, krijg je [CORS-errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).</p>
+    <p>Deze pagina checkt de verbinding met de backend. Als je op de knop hieronder klikt, wordt er een call gedaan naar <tt>localhost:8000/frontend</tt>. Dit endpoint geeft de huidige datum terug, die vervolgens met behulp van JavaScript onder het formulier wordt weergegeven.</p>
+
+
+    <form>
+        <p>Klik op de onderstaande knop om de connectie met de backend te testen.</p>
+        <button id="btn" value="">Check de connectie</button>
+    </form>
+
+    <p id="result"></p>
+    
+</body>
+
+<script>
+        fetch('http://localhost:8000/frontend')
+        .then( resp => resp.json() )
+        .then( json => {
+            let datum = new Date(json['date']).toLocaleDateString('NL-nl', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'} )
+            document.getElementById('result').innerHTML = `De huidige datum is ${datum}`
+        })
+</script>
+</html>

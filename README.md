@@ -55,6 +55,22 @@ bestandsnaam | omschrijving
 `check_admin.sh`   | Om het jwt van een ROLE_ADMIN te checken
 `failed_login_user.sh`  | Om een speler met verkeerde credentials te checken
 
+## Connectie maken vanaf een frontend
+
+Om vanaf een frontend connectie te maken met deze backend is het noodzakelijk om de frontend in hetzelfde domein te hebben draaien als de backend; als je de frontend op een ander domein draait, of gewoon als bestand op je file-system opent, krijg je [CORS-errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).
+
+In deze repository vind je ook een directory `frontend-demo`. Start in deze directory een locale server op *op een andere poort* dan de backend zelf (bijvoorbeeld poort 8080).
+
+```shell
+# in de directory frontend-demo
+php -S localhost:8080
+```
+
+Ga vervolgens met een browser naar `localhost:8080/`. Als het goed is zie je nu een test-pagina. Klik op de knop om de connectie te testen. Hiermee wordt een call gedaan naar `localhost:8000/frontend` die de huidige datum teruggeeft. De test-pagina toont vervolgens deze datum onder het formulier:
+
+![Check van de communicatie met de backend](frontend/demo.png)
+
+
 ## End-points
 
 De applicatie heeft de volgende end-points. Ze spreken redelijk voor zich, maar bestudeer eventueel de Controllers en [de gegenereerde documentatie](http://localhost:8000/api/docs).
