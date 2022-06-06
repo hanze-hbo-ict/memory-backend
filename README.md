@@ -59,10 +59,10 @@ bestandsnaam | omschrijving
 
 Om vanaf een frontend connectie te maken met deze backend is het noodzakelijk om de frontend in hetzelfde domein te hebben draaien als de backend; als je de frontend op een ander domein draait, of gewoon als bestand op je file-system opent, krijg je [CORS-errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).
 
-In deze repository vind je ook een directory `frontend-demo`. Start in deze directory een locale server op *op een andere poort* dan de backend zelf (bijvoorbeeld poort 8080).
+In deze repository vind je ook een directory `frontend`. Start in deze directory een locale server op *op een andere poort* dan de backend zelf (bijvoorbeeld poort 8080).
 
 ```shell
-# in de directory frontend-demo
+# in de directory frontend
 php -S localhost:8080
 ```
 
