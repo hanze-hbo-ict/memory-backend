@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 
 #[Route("/api/player/")]
@@ -38,12 +39,15 @@ class PlayerController extends AbstractController {
     }
 
     #[Route('{id}/preferences', requirements:['id'=>'\d+'], methods:['GET', 'POST'])]
-    public function getPlayerPreferences($id, ManagerRegistry $doctrine):Response {
+    public function getPlayerPreferences($id, ManagerRegistry $doctrine, UserInterface $userJWT):Response {
         $em = $doctrine->getManager();
         $user = $em->find(Player::class, $id);
         if ($user) {
             $request = Request::createFromGlobals();
             if ($request->getMethod() == 'POST') {
+                if ($userJWT != $user && !in_array('ROLE_ADMIN', $userJWT->getRoles())) {
+                    return new Response('Cannot change settings for another player', 403);
+                }
                 $params = json_decode(Request::createFromGlobals()->getContent(), true);
                 $user->setPreferences($params);
                 $em->persist($user);
@@ -56,12 +60,15 @@ class PlayerController extends AbstractController {
     }
 
     #[Route('{id}/email', requirements:['id'=>'\d+'],  methods:['GET', 'PUT'])]
-    public function playerEmail($id, ManagerRegistry $doctrine):Response {
+    public function playerEmail($id, ManagerRegistry $doctrine, UserInterface $userJWT):Response {
         $em = $doctrine->getManager();
         $user = $em->find(Player::class, $id);
         if ($user) {
             $request = Request::createFromGlobals();
             if ($request->getMethod() == 'PUT') {
+                if ($userJWT != $user && !in_array('ROLE_ADMIN', $userJWT->getRoles())) {
+                    return new Response('Cannot change the email of another player', 403);
+                }
                 $params = json_decode(Request::createFromGlobals()->getContent(), true);
                 $user->email = $params['email'];
                 $em->persist($user);
@@ -70,7 +77,8 @@ class PlayerController extends AbstractController {
             } else return new JsonResponse($user->email);
         }
 
-        return new Response('', 404);    }
+        return new Response('', 404);
+    }
 
 
 }

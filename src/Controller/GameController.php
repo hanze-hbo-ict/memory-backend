@@ -7,6 +7,7 @@ use App\Entity\Game;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,12 +39,16 @@ class GameController extends AbstractController {
 
 
     #[Route('/save', methods:['POST'])]
-    public function saveGame(ManagerRegistry $doctrine):Response {
+    public function saveGame(UserInterface $userJWT, ManagerRegistry $doctrine):Response {
         set_error_handler(fn() => throw new \ErrorException());
         try {
             $params = json_decode(Request::createFromGlobals()->getContent(), true);
             $em = $doctrine->getManager();
             $player = $em->find(Player::class, $params['id']);
+
+            if ($player != $userJWT && !in_array('ROLE_ADMIN', $userJWT->getRoles())) {
+                return new Response("You cannot save a game for another player", 403);
+            }
 
             $player->addGame(new Game($player, $params));
             $em->persist($player);
