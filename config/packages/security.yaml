@@ -33,11 +33,6 @@ security:
             stateless: true
             jwt: ~
 
-        game_save:
-            pattern: ^/game/save
-            stateless: true
-            jwt: ~
-
         main:
             lazy: true
             provider: users
