@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Player;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -13,7 +14,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class DefaultController extends AbstractController {
     #[Route('/', methods:['GET'])]
-    public function index():Response {
+    public function index(LoggerInterface $logger):Response {
+        $logger->info("Hallo allemaal");
         return new Response('DefaultController');
     }
 
