@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class DefaultController extends AbstractController {
     #[Route('/', methods:['GET'])]
     public function index(LoggerInterface $logger):Response {
-        $logger->info("Hallo allemaal");
+//        $logger->info("Hallo allemaal");
         return new Response('DefaultController');
     }
 

@@ -11,6 +11,7 @@ when@dev:
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: info
                 channels: ['!doctrine']
+                formatter: 'memory.custom-formatter'
 #                channels: ["!event"]
             # uncomment to get logging in your browser
             # you may have to allow bigger header sizes in your Web server configuration

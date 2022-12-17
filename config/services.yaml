@@ -28,3 +28,6 @@ services:
         arguments: [ '@request_stack' ]
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
+
+    memory.custom-formatter:
+        class: App\Util\CustomFormatter
