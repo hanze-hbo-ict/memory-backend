@@ -6,7 +6,12 @@ use Monolog\Formatter\FormatterInterface;
 class CustomFormatter implements FormatterInterface {
 
     public function format(array $record):string {
-        return "custom-formatter!";
+        $msg = $record['datetime']->date ?? date("Y-m-d H:i:s");
+        $msg .= "\t".($record['context']['request_uri'] ?? '');;
+        $msg .= "\t".$record['message']."\r\n";
+        return $msg;
+
+//        return print_r ($record, true);
     }
 
 

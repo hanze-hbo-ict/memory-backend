@@ -61,7 +61,7 @@ Om vanaf een frontend connectie te maken met deze backend is het noodzakelijk om
 
 In deze repository vind je ook een directory `frontend`. Start in deze directory een locale server op *op een andere poort* dan de backend zelf (bijvoorbeeld poort 8080).
 
-```shell
+```shellΩ
 # in de directory frontend
 php -S localhost:8080
 ```
