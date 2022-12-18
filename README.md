@@ -111,3 +111,16 @@ Methode en end-point | return value | omschrijving
 ----|----|----
 `GET /api/admin/aggregate` | 200 Ok | Totaal aantal gespeelde spellen en spelers; overzicht van de gekozen api's
 `GET /api/admin/players` | 200 Ok | Overzicht van gebruikersnamen en email-adressen van alle spelers
+
+## Logging
+
+De applicatie maakt gebruik van [monolog](https://github.com/Seldaek/monolog) voor het bijhouden van log-bestanden. De logs worden bijgehouden in `var/log/`. In totaal zijn vier verschillende logs gedefinieerd:
+
+naam | omschrijving
+----|----
+`dev` | hierin komen alle meldingen (met niveau `INFO` of hoger) te staan
+`request` | de requests met de gevonden route (zo die er is)
+`monolog` | alle gebeurtenissen op de database (vanaf level `INFO`)
+`error` | alle foutmelden die door de applicatie worden gegenereerd
+
+Om de leesbaarheid van de logs wat te vergroten wordt de volledige melding wat gekort. Het standaard-formaat is `datetime \t request \t message`. Dit gebeurt in de klasse `src\Util\CustomFormatter`. Bestudeer de code in deze klassen wanneer je het formaat toch nog anders wilt hebben. De logs zelf zijn gedefinieerd in `config/packages/monolog.yaml`.

@@ -19,7 +19,7 @@ when@dev:
                 formatter: 'memory.custom-formatter'
             routes:
                 type: stream
-                path: "%kernel.logs_dir%/routes.log"
+                path: "%kernel.logs_dir%/request.log"
                 level: info
                 channels: ['request']
                 formatter: 'memory.custom-formatter'
