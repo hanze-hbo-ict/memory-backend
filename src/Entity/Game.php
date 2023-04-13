@@ -18,7 +18,7 @@ use phpDocumentor\Reflection\Types\True_;
 class Game implements \JsonSerializable {
 
     #[Column(unique:true)] #[Id] #[GeneratedValue] private int $id;
-    #[Column] public \DateTime $date;
+    #[Column(name:'date')] public \DateTime $dateTime;
     #[Column] public float $score;
 
     // optional string for api used in this game
@@ -41,7 +41,7 @@ class Game implements \JsonSerializable {
     {
         $this->player = new ArrayCollection();
         $this->player[] = $player;
-        $this->date = new \DateTime('now');
+        $this->dateTime = new \DateTime('now');
         $this->score = $params['score'];
         $this->api = $params['api'] ?? '';
         $this->color_found = $params['color_found'] ?? '';
@@ -50,9 +50,14 @@ class Game implements \JsonSerializable {
 
     public function getId(): int { return $this->id; }
 
+    public function getDayFromDate():string {
+        return $this->dateTime->format('Y-m-d');
+    }
+
     public function jsonSerialize():mixed {
         return array(
-            'date' => $this->date,
+            'date' => $this->dateTime,
+            'day' => $this->getDayFromDate(),
             'score' => $this->score,
             'api' => $this->api,
             'color_closed' => $this->color_closed,
