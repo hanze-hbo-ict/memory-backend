@@ -12,6 +12,10 @@ Clone deze repository ergens op je lokale machine. Installeer vervolgens de depe
 # installatie van de dependencies
 php composer.phar install #of composer install
 
+## PDO foutmelding
+
+Mocht je de foutmelding krijgen dat er een PDO-dependecy niet gevonden kan worden, dan moet je de `php.ini` aanpassen, zodat de extensies `pdo-sqlite3`, `sodium` en `sqlite3` gevonden kunnen worden.
+
 # opzetten van de database
 php bin/console doctrine:schema:update --force
 
