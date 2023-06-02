@@ -34,30 +34,23 @@ class AdminController extends AbstractController
     }
 
     /*
-     * Onderstaande endpoint geeft het aantal spelen dat per dag gespeeld is terug
-     * Feitelijk is dit gewoon een `group by`, maar dat kregen we niet aan de praat
-     * in DBAL. Dus we hebben we het maar gewoon met een loopje gemaakt.
-     *
-     * Iemand een betere oplossing hiervoor heeft, is welkom om een PR te doen. Als -ie
-     * goed is, krijg je een snikker.
-     *
-     * BABA/HOEM
+     * Onderstaande endpoint geeft het aantal spelen dat per dag gespeeld is terug.
      */
-
     #[Route('/dates', methods: ['GET'])]
     public function getAggregatedByDate(ManagerRegistry $doctrine) {
         $em = $doctrine->getManager();
-        $games = $em->createQuery("select g.dateTime as date from App\Entity\Game g order by date")->getArrayResult();
+        $results = $em->createQuery("
+            SELECT SUBSTRING(g.dateTime, 1, 10) AS date, COUNT(g.id) AS count
+            FROM App\Entity\Game g
+            GROUP BY date
+            ORDER BY date
+        ")->getArrayResult();
 
-        $cnt = [];
-        foreach ($games as $el) {
-            $key = $el['date']->format('Y-m-d');
-            $cnt[$key] = array_key_exists($key, $cnt) ?  $cnt[$key]+1 : 1;
+        $aggregated = [];
+        foreach ($results as $row) {
+            $aggregated[$row['date']] = $row['count'];
         }
 
-        return new JsonResponse($cnt);
+        return new JsonResponse($aggregated);
     }
-
-
-
 }
