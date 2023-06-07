@@ -1,8 +1,10 @@
-FROM php:alpine
+FROM php:8.1-alpine
 
 # Install composer
 RUN apk add --no-cache curl
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+ENV COMPOSER_ALLOW_SUPERUSER 1
 
 # Create volume for the database
 VOLUME [ "/usr/src/memory-backend/var" ]
