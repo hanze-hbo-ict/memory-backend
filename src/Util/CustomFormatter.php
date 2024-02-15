@@ -2,6 +2,7 @@
 namespace App\Util;
 
 use Monolog\Formatter\FormatterInterface;
+use Monolog\LogRecord;
 
 class CustomFormatter implements FormatterInterface {
 
@@ -14,7 +15,7 @@ class CustomFormatter implements FormatterInterface {
      * zetten, natuurlijk; of weghalen). Je loopt dan wel het risico dat je output-buffer volloopt.
      */
 
-    public function format(array $record):string {
+    public function format(LogRecord $record):string {
         $msg = $record['datetime']->date ?? date("Y-m-d H:i:s");
         $msg .= "\t".($record['context']['request_uri'] ?? '');;
         $msg .= "\t".$record['message']."\r\n";

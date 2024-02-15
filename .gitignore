@@ -30,3 +30,4 @@ package.json
 
 create/*_token
 puppeteer/
+*/*_token
