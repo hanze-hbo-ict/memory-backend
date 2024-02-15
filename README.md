@@ -12,10 +12,6 @@ Clone deze repository ergens op je lokale machine. Installeer vervolgens de depe
 # installatie van de dependencies
 php composer.phar install #of composer install
 
-## PDO foutmelding
-
-Mocht je de foutmelding krijgen dat er een PDO-dependecy niet gevonden kan worden, dan moet je de `php.ini` aanpassen, zodat de extensies `pdo-sqlite3`, `sodium` en `sqlite3` gevonden kunnen worden.
-
 # opzetten van de database
 php bin/console doctrine:schema:update --force
 
@@ -32,6 +28,10 @@ docker build . -t memory-backend
 # Runnen van docker image
 docker run -p 8000:8000 -d -v memory-backend-data:/usr/src/memory-backend/var --name memory-backend memory-backend
 ```
+
+## PDO foutmelding
+
+Mocht je de foutmelding krijgen dat er een PDO-dependecy niet gevonden kan worden, dan moet je de `php.ini` aanpassen, zodat de extensies `pdo-sqlite3`, `sodium` en `sqlite3` gevonden kunnen worden.
 
 __Let op__: om het runnen van de applicatie wat eenvoudiger te maken, hebben we zowel de private als de publieke sleutel in git gezet (in `config/jwt`). Dit is natuurlijk niet zoals het hoort, want je moet nooit je private sleutel in versiebeheer zetten. Je kunt natuurlijk altijd zelf een private en publieke sleutel maken, mocht je dat willen. Bekijk eventueel [deze documentatie](https://digitalfortress.tech/php/jwt-authentication-with-symfony/) om te zien hoe je één en ander helemaal goed opzet.
 
