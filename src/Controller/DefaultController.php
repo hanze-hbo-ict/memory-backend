@@ -42,8 +42,6 @@ class DefaultController extends AbstractController {
 
     #[Route('/register', methods: ['POST'])]
     public function register(ManagerRegistry $doctrine): Response {
-        set_error_handler(fn() => throw new \ErrorException());
-
         try {
             $params = json_decode(Request::createFromGlobals()->getContent(), true);
             $pw = password_hash($params['password'], PASSWORD_DEFAULT);
@@ -53,7 +51,11 @@ class DefaultController extends AbstractController {
             $em->flush();
             return new Response("", 201, ["Location" => "/player/$player->id"]);
         } catch (\ErrorException $e) {
-            return new Response("",400);
+            ob_start();
+            echo $e->getMessage();
+            echo "\n\n";
+            echo $e->getTraceAsString();
+            return new Response(ob_get_clean(),400);
         }
     }
 }
