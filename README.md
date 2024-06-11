@@ -6,7 +6,7 @@ We maken bij deze applicatie gebruik van [de LexikJWTAuthenticationBundle](https
 
 ## Installatie en opstarten
 
-Clone deze repository ergens op je lokale machine. Installeer vervolgens de dependencies met behulp van composer. De applicatie maakt gebruik van een sqlite3 database en doctrine. Pas eventueel de gegevens aan in de configuratie om een ander pad naar de database in te stellen. Tenslotte kun je met de console de corresponderende tabellen aanmaken. Uiteindelijk `cd` je in de directory `public` en kun je de server opstarten.
+Clone deze repository ergens op je lokale machine (dus NIET in de cloud). Installeer vervolgens de dependencies met behulp van composer. De applicatie maakt gebruik van een sqlite3 database en doctrine. Pas eventueel de gegevens aan in de configuratie om een ander pad naar de database in te stellen. Tenslotte kun je met de console de corresponderende tabellen aanmaken. Uiteindelijk `cd` je in de directory `public` en kun je de server opstarten.
 
 ```shell
 # installatie van de dependencies
@@ -31,7 +31,7 @@ docker run -p 8000:8000 -d -v memory-backend-data:/usr/src/memory-backend/var --
 
 ## PDO foutmelding
 
-Mocht je de foutmelding krijgen dat er een PDO-dependecy niet gevonden kan worden, dan moet je de `php.ini` aanpassen, zodat de extensies `pdo-sqlite3`, `sodium` en `sqlite3` gevonden kunnen worden.
+Mocht je de foutmelding krijgen dat er een PDO-dependecy niet gevonden kan worden, dan moet je de `php.ini` aanpassen, zodat de extensies `pdo_sqlite`, `sodium`, `sqlite3` en `openssl` gevonden kunnen worden.
 
 __Let op__: om het runnen van de applicatie wat eenvoudiger te maken, hebben we zowel de private als de publieke sleutel in git gezet (in `config/jwt`). Dit is natuurlijk niet zoals het hoort, want je moet nooit je private sleutel in versiebeheer zetten. Je kunt natuurlijk altijd zelf een private en publieke sleutel maken, mocht je dat willen. Bekijk eventueel [deze documentatie](https://digitalfortress.tech/php/jwt-authentication-with-symfony/) om te zien hoe je één en ander helemaal goed opzet.
 
