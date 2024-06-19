@@ -38,19 +38,27 @@ class GameController extends AbstractController {
 
 
     #[Route('/save', methods:['POST'])]
-    public function saveGame(ManagerRegistry $doctrine):Response {
-        set_error_handler(fn() => throw new \ErrorException());
+    public function saveGame(ManagerRegistry $doctrine): Response
+    {
         try {
             $params = json_decode(Request::createFromGlobals()->getContent(), true);
             $em = $doctrine->getManager();
             $player = $em->find(Player::class, $params['id']);
 
-            $player->addGame(new Game($player, $params));
-            $em->persist($player);
+            if (!$player) {
+                return new Response('Player not found', 404);
+            }
+
+            $game = new Game($params);
+            $game->addPlayer($player);
+
+            $em->persist($game);
+            $em->persist($player); // Ensure the player entity is managed by Doctrine
             $em->flush();
+
             return new JsonResponse($player);
-        } catch (\ErrorException $e) {
-            return new Response('', 400);
+        } catch (\Exception $e) {
+            return new Response($e->getMessage(), 400);
         }
     }
 }
