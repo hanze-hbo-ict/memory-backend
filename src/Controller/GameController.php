@@ -39,7 +39,7 @@ class GameController extends AbstractController {
 
     #[Route('/save', methods:['POST'])]
     public function saveGame(ManagerRegistry $doctrine):Response {
-        set_error_handler(fn() => throw new \ErrorException());
+        // set_error_handler(fn() => throw new \ErrorException());
         try {
             $params = json_decode(Request::createFromGlobals()->getContent(), true);
             $em = $doctrine->getManager();
