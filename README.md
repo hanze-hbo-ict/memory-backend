@@ -4,23 +4,58 @@ Een php/symfony applicatie om te gebruiken voor het opslaan van spelers en spell
 
 We maken bij deze applicatie gebruik van [de LexikJWTAuthenticationBundle](https://github.com/lexik/LexikJWTAuthenticationBundle). Bekijk eventueel de code om te onderzoeken hoe dat ding werkt.
 
-## Installatie en opstarten
+# Installatie en opstarten
 
-Clone deze repository ergens op je lokale machine (dus NIET in de cloud). Installeer vervolgens de dependencies met behulp van composer. De applicatie maakt gebruik van een sqlite3 database en doctrine. Pas eventueel de gegevens aan in de configuratie om een ander pad naar de database in te stellen. Tenslotte kun je met de console de corresponderende tabellen aanmaken. Uiteindelijk `cd` je in de directory `public` en kun je de server opstarten.
+Clone deze repository ergens op je lokale machine (dus NIET in de cloud). De afhankelijkheden in van het project staan, zoals te doen gebruikelijk, in het bestand `package.json`. Installeer deze afhankelijkheden met behulp van [composer](https://getcomposer.org/):
 
 ```shell
 # installatie van de dependencies
 php composer.phar install #of composer install
-
-# opzetten van de database
-php bin/console doctrine:schema:update --force
-
-#runnen van de app
-cd public
-php -S localhost:8000
 ```
 
-### Backend draaien met docker
+## Opzetten van de jwt
+
+De applicatie maakt gebruik van een [sqlite3 database](https://sqlite.org/index.html), [lexik/jwt](https://symfony.com/bundles/LexikJWTAuthenticationBundle/current/index.html) en [doctrine](https://www.doctrine-project.org/). Voor het werken met JWT is het noodzakelijk dat je een goed *passphrase* bedenk, waarmee de tokens gekruid (*gesalt*) kunnen worden. Check het bestand `.env` en pas eventueel de gegevens volgens de onderstaande gegevens aan (in de code hieronder gebruiken we 'BeeFrogFlower' als passphrase):
+
+```shell
+DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+###> nelmio/cors-bundle ###
+CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+###< nelmio/cors-bundle ###
+
+###> lexik/jwt-authentication-bundle ###
+JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+JWT_PASSPHRASE=BeeFrogFlower
+###< lexik/jwt-authentication-bundle ### 
+```
+Maak nu de private en publieke sleutel aan die bij de jwt gebruikt worden. Gebruik hiervoor de onderstaande code. Je zult gevraagd worden om een passphrase aan te geven; dat moet natuurlijk hetzelfde zijn als wat je hierboven in `.env` hebt ingevuld.
+
+```shell
+mkdir config/jwt/
+openssl genrsa -out config/jwt/private.pem -aes256 4096
+openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
+```
+
+## opzetten van de database
+
+Voor de database maken we gebruik van doctrine; de entity-klassen vind je in `src/Entity/` (je verwacht het niet). Maak aan de hand hiervan de database aan:
+
+```shell
+php bin/console doctrine:schema:update --force --complete
+``` 
+
+Dit maakt de datbaase aan in `var/data.db` aan. Bekijk eventueel de gegenereerde database met behulp van sqlite3.
+
+## runnen van de app
+
+Je kunt de app opstarten met behulp van de ingebouwde php server:
+
+```shell
+php -S localhost:8000 -t public
+```
+
+# Backend draaien met docker
 
 ```shell
 # Bouwen en taggen image
@@ -36,7 +71,7 @@ Daarnaast is het op Windows van belang dat `extension_dir = "ext"` ook aangepast
 
 __Let op__: om het runnen van de applicatie wat eenvoudiger te maken, hebben we zowel de private als de publieke sleutel in git gezet (in `config/jwt`). Dit is natuurlijk niet zoals het hoort, want je moet nooit je private sleutel in versiebeheer zetten. Je kunt natuurlijk altijd zelf een private en publieke sleutel maken, mocht je dat willen. Bekijk eventueel [deze documentatie](https://digitalfortress.tech/php/jwt-authentication-with-symfony/) om te zien hoe je één en ander helemaal goed opzet.
 
-## Het vullen van de database
+# Het vullen van de database
 
 Het database-schema is vrij eenvoudig van opzet: er is een tabel `player` en een tabel `game` (die op een wat ingewikkelde manier met elkaar verbonden zijn: zie [deze blog om te lezen waarom](https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table)). Check de entiteiten in `App/Entity/` om een beeld te krijgen van hoe deze twee zich tot elkaar verhouden.
 
@@ -47,7 +82,7 @@ bestandsnaam | omschrijving
 `create_users.sh`  | Om een aantal spelers in de database aan te maken
 `create_games.sh`  | Om een aantal spellen in de database op te slaan
 
-Hierna kun je checken of het inloggen werkt. Als je een speler of een admin inlogt, krijg je van de applicatie een JWT terug. Sla deze op in respectievelijk `player_token` en `admin_token` zodat je de onderstaande scripts kunt gebruiken om te checken of alles goed werkt. Bestudeer ook de scripts zelf om inzicht te krijgen in de API's.
+Hierna kun je checken of het inloggen werkt, door gebruik te maken van het script `login_player.sh` of `login_admin.sh`. Als je een speler of een admin inlogt, krijg je van de applicatie een JWT terug. Sla deze op in respectievelijk `player_token` en `admin_token` zodat je de onderstaande scripts kunt gebruiken om te checken of alles goed werkt. Bestudeer ook de scripts zelf om inzicht te krijgen in de API's.
 
 In de code is hard geprogrammeerd dat de gebruiker met gebruikersnaam 'Henk' de `ROLE_ADMIN` heeft.
 
@@ -64,7 +99,7 @@ bestandsnaam | omschrijving
 
 In deze repository vind je ook een directory `frontend`, met daarin één pagina: `index.html`. Deze pagina kun je gebruiken om je setup te checken. Start in deze directory een locale server op die naar een *andere poort* dan de backend zelf luistert (bijvoorbeeld poort 8080).
 
-```shellΩ
+```shell
 # in de directory frontend
 php -S localhost:8080
 ```
@@ -77,7 +112,7 @@ Ga vervolgens met een browser naar `localhost:8080/`. Als het goed is zie je nu 
 ![Check van de communicatie met de backend](frontend/demo.png)
 
 
-## End-points
+# End-points
 
 De applicatie heeft de volgende end-points. Ze spreken redelijk voor zich, maar bestudeer eventueel de Controllers en [de gegenereerde documentatie](http://localhost:8000/api/docs).
 
