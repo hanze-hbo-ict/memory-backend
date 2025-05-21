@@ -20,31 +20,31 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
         login:
-            pattern: ^/api/login
+            pattern: ^/memory/login
             stateless: true
             json_login:
                 provider: users
-                check_path: /api/login
+                check_path: /memory/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
-        api:
-            pattern: ^/api
+        player:
+            pattern: ^/player
             stateless: true
             jwt: ~
-
+        admin:
+            pattern: ^/admin
+            stateless: true
+            jwt: ~
         main:
             lazy: true
             provider: users
-
-
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/memory/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/api/admin, roles: ROLE_ADMIN }
-        - { path: ^/api/player, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/player, roles: ROLE_USER }
 #
 when@test:
     security:
