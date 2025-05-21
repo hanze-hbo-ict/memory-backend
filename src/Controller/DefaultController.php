@@ -26,7 +26,7 @@ class DefaultController extends AbstractController {
         return new JsonResponse($rv);
     }
 
-    #[Route('/api/login_check', methods:['POST'])]
+    #[Route('/api/login', methods:['POST'])]
     public function login():Response {
         return new Response('');
     }

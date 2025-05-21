@@ -24,7 +24,7 @@ security:
             stateless: true
             json_login:
                 provider: users
-                check_path: /api/login_check
+                check_path: /api/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 

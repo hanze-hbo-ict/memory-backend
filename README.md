@@ -121,7 +121,7 @@ Methode en end-point | return value | omschrijving
 `GET /scores` |  200 Ok | Overzicht van de spelers en hun score (ongesorteerd)
 `POST /register` | 201 Created | Registeren van een speler
 " | 400 Illegal Request | Als de opgestuurde gegevens niet kloppen met het model
-`POST /api/login_check` | 200 Ok | Als de credentials kloppen met de speler, komt hier een JWT terug
+`POST /api/login` | 200 Ok | Als de credentials kloppen met de speler, komt hier een JWT terug
 " | 401 Unauthorized | Als de credentials niet kloppen (specifiek password niet bij username)
 `POST /game` | 201 Created | Opslaan van game voor speler
 " | 400 | Als request niet overeenkomt met het model
