@@ -69,8 +69,6 @@ docker run -p 8000:8000 -d -v memory-backend-data:/usr/src/memory-backend/var --
 Mocht je de foutmelding krijgen dat er een PDO-dependecy niet gevonden kan worden, dan moet je de `php.ini` aanpassen, zodat de extensies `pdo_sqlite`, `sodium`, `sqlite3` en `openssl` gevonden kunnen worden.
 Daarnaast is het op Windows van belang dat `extension_dir = "ext"` ook aangepast wordt (Door de `;` er voor weg te halen).
 
-__Let op__: om het runnen van de applicatie wat eenvoudiger te maken, hebben we zowel de private als de publieke sleutel in git gezet (in `config/jwt`). Dit is natuurlijk niet zoals het hoort, want je moet nooit je private sleutel in versiebeheer zetten. Je kunt natuurlijk altijd zelf een private en publieke sleutel maken, mocht je dat willen. Bekijk eventueel [deze documentatie](https://digitalfortress.tech/php/jwt-authentication-with-symfony/) om te zien hoe je één en ander helemaal goed opzet.
-
 # Het vullen van de database
 
 Het database-schema is vrij eenvoudig van opzet: er is een tabel `player` en een tabel `game` (die op een wat ingewikkelde manier met elkaar verbonden zijn: zie [deze blog om te lezen waarom](https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table)). Check de entiteiten in `App/Entity/` om een beeld te krijgen van hoe deze twee zich tot elkaar verhouden.
