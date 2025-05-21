@@ -118,38 +118,38 @@ De applicatie heeft de volgende end-points. Ze spreken redelijk voor zich, maar 
 
 Methode en end-point | return value | omschrijving
 ----|----|----
-`GET /scores` |  200 Ok | Overzicht van de spelers en hun score (ongesorteerd)
-`POST /register` | 201 Created | Registeren van een speler
+`GET memory/scores` |  200 Ok | Overzicht van de spelers en hun score (ongesorteerd)
+`POST memory/register` | 201 Created | Registeren van een speler
 " | 400 Illegal Request | Als de opgestuurde gegevens niet kloppen met het model
-`POST /api/login` | 200 Ok | Als de credentials kloppen met de speler, komt hier een JWT terug
+`POST /memory/login` | 200 Ok | Als de credentials kloppen met de speler, komt hier een JWT terug
 " | 401 Unauthorized | Als de credentials niet kloppen (specifiek password niet bij username)
-`POST /game` | 201 Created | Opslaan van game voor speler
+`POST /game/save` | 201 Created | Opslaan van game voor speler
 " | 400 | Als request niet overeenkomt met het model
 
 ### ROLE_USER
 
 Methode en end-point | return value | omschrijving
 ----|----|----
-`GET /api/player/{id}` | 200 Ok | Alle gegevens van speler `id`
+`GET /player/{id}` | 200 Ok | Alle gegevens van speler `id`
 " | 404 Not Found | Als de `id` niet gevonden is
-`GET /api/player/{id}/games` | 200 Ok | De spellen die de speler met `id` heeft gespeeld
+`GET /player/{id}/games` | 200 Ok | De spellen die de speler met `id` heeft gespeeld
 " | 404 Not Found | Als de `id` niet gevonden is
-`GET /api/player/{id}/preferences` | 200 Ok | De voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
+`GET /player/{id}/preferences` | 200 Ok | De voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
 " | 404 Not Found | Als de `id` niet gevonden is
-`POST /api/player/{id}/preferences` | 204 No Content | Aanpassen van de voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
+`POST /player/{id}/preferences` | 204 No Content | Aanpassen van de voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
 " | 404 Not Found | Als de `id` niet gevonden is
-`GET /api/player/{id}/email` | 200 Ok | Het email-adres van speler `id`
+`GET /player/{id}/email` | 200 Ok | Het email-adres van speler `id`
 " | 404 Not Found | Als de `id` niet gevonden is
-`PUT /api/player/{id}/email` | 204 No Content | Aanpassen van het email=adres van speler `id`
+`PUT /player/{id}/email` | 204 No Content | Aanpassen van het email=adres van speler `id`
 " | 404 Not Found | Als de `id` niet gevonden is
 
 ### ROLE_ADMIN
 
 Methode en end-point | return value | omschrijving
 ----|----|----
-`GET /api/admin/aggregate` | 200 Ok | Totaal aantal gespeelde spellen en spelers; overzicht van de gekozen api's
-`GET /api/admin/players` | 200 Ok | Overzicht van gebruikersnamen en email-adressen van alle spelers
-`GET /api/admin/dates` | 200 Ok | Totaal van het aantal gespeelde spelletjes per dag
+`GET /admin/aggregate` | 200 Ok | Totaal aantal gespeelde spellen en spelers; overzicht van de gekozen api's
+`GET /admin/players` | 200 Ok | Overzicht van gebruikersnamen en email-adressen van alle spelers
+`GET /admin/dates` | 200 Ok | Totaal van het aantal gespeelde spelletjes per dag
 
 ## Logging
 

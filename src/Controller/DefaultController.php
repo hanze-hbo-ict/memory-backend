@@ -15,8 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class DefaultController extends AbstractController {
     #[Route('/', methods:['GET'])]
     public function index(LoggerInterface $logger):Response {
-//        $logger->info("Hallo allemaal");dd
-        return new Response('DefaultController');
+        return new Response('Hallo allemaal 👋');
     }
 
     #[Route('/frontend', methods:['GET'])]
@@ -24,38 +23,5 @@ class DefaultController extends AbstractController {
         $rv['message'] = 'Welkom bij de memory backend api.';
         $rv['date'] = date("F j, Y, g:i a");
         return new JsonResponse($rv);
-    }
-
-    #[Route('/api/login', methods:['POST'])]
-    public function login():Response {
-        return new Response('');
-    }
-
-    #[Route('/scores', methods: ['GET'])]
-    public function scores(ManagerRegistry $doctrine)
-    {
-        $em = $doctrine->getManager();
-        $scores = $em->createQuery("select p.username, avg(g.score) as score from App\Entity\Player p 
-                    join p.games g group by p.username")->getArrayResult();
-        return new JsonResponse($scores);
-    }
-
-    #[Route('/register', methods: ['POST'])]
-    public function register(ManagerRegistry $doctrine): Response {
-        try {
-            $params = json_decode(Request::createFromGlobals()->getContent(), true);
-            $pw = password_hash($params['password'], PASSWORD_DEFAULT);
-            $player = new Player($params['username'], $params['email'], $pw);
-            $em = $doctrine->getManager();
-            $em->persist($player);
-            $em->flush();
-            return new Response("", 201, ["Location" => "/player/$player->id"]);
-        } catch (\ErrorException $e) {
-            ob_start();
-            echo $e->getMessage();
-            echo "\n\n";
-            echo $e->getTraceAsString();
-            return new Response(ob_get_clean(),400);
-        }
     }
 }

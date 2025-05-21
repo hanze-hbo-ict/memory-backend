@@ -14,12 +14,17 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 
-#[Route("/api/player/")]
+#[Route("/player")]
 class PlayerController extends AbstractController {
 
     public function __construct(private LoggerInterface $logger) { }
 
-    #[Route('{id}', requirements:['id'=>'\d+'])]
+    #[Route('/')]
+    public function index():Response {
+        return new Response("PlayerController");
+    }
+
+    #[Route('/{id}', requirements:['id'=>'\d+'])]
     public function getUserData($id, ManagerRegistry $doctrine):Response {
         $em = $doctrine->getManager();
         $user = $em->find(Player::class, $id);
@@ -27,12 +32,8 @@ class PlayerController extends AbstractController {
         else return new Response('', 404);
     }
 
-    #[Route('/')]
-    public function index():Response {
-        return new Response("PlayerController");
-    }
 
-    #[Route('{id}/games',  requirements:['id'=>'\d+'], methods:['GET'])]
+    #[Route('/{id}/games',  requirements:['id'=>'\d+'], methods:['GET'])]
     public function getPlayerGames($id, ManagerRegistry $doctrine):Response {
         $em = $doctrine->getManager();
         $user = $em->find(Player::class, $id);
@@ -40,7 +41,7 @@ class PlayerController extends AbstractController {
         else return new Response('', 404);
     }
 
-    #[Route('{id}/preferences', requirements:['id'=>'\d+'], methods:['GET', 'POST'])]
+    #[Route('/{id}/preferences', requirements:['id'=>'\d+'], methods:['GET', 'POST'])]
     public function getPlayerPreferences($id, ManagerRegistry $doctrine):Response {
         $em = $doctrine->getManager();
         $user = $em->find(Player::class, $id);
@@ -58,7 +59,7 @@ class PlayerController extends AbstractController {
         return new Response('', 404);
     }
 
-    #[Route('{id}/email', requirements:['id'=>'\d+'],  methods:['GET', 'PUT'])]
+    #[Route('/{id}/email', requirements:['id'=>'\d+'],  methods:['GET', 'PUT'])]
     public function playerEmail($id, ManagerRegistry $doctrine):Response {
         $em = $doctrine->getManager();
         $user = $em->find(Player::class, $id);
@@ -73,7 +74,8 @@ class PlayerController extends AbstractController {
             } else return new JsonResponse($user->email);
         }
 
-        return new Response('', 404);    }
+        return new Response('', 404);
+    }
 
 
 }
