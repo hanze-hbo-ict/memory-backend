@@ -8,16 +8,23 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 #[Route("/player")]
+#[IsGranted('ROLE_USER')]
 class PlayerController extends AbstractController {
 
-    public function __construct(private LoggerInterface $logger) { }
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly Security $security
+    ) { }
 
     #[Route('/')]
     public function index():Response {
@@ -26,6 +33,8 @@ class PlayerController extends AbstractController {
 
     #[Route('/{id}', requirements:['id'=>'\d+'])]
     public function getUserData($id, ManagerRegistry $doctrine):Response {
+        if(!$this->userIsValid($id)) return new Response('', 403);
+
         $em = $doctrine->getManager();
         $user = $em->find(Player::class, $id);
         if ($user) return new JsonResponse($user);
@@ -35,6 +44,8 @@ class PlayerController extends AbstractController {
 
     #[Route('/{id}/games',  requirements:['id'=>'\d+'], methods:['GET'])]
     public function getPlayerGames($id, ManagerRegistry $doctrine):Response {
+        if(!$this->userIsValid($id)) return new Response('', 403);
+
         $em = $doctrine->getManager();
         $user = $em->find(Player::class, $id);
         if ($user) return new JsonResponse($user->getGames()->toArray());
@@ -43,6 +54,8 @@ class PlayerController extends AbstractController {
 
     #[Route('/{id}/preferences', requirements:['id'=>'\d+'], methods:['GET', 'POST'])]
     public function getPlayerPreferences($id, ManagerRegistry $doctrine):Response {
+        if(!$this->userIsValid($id)) return new Response('', 403);
+
         $em = $doctrine->getManager();
         $user = $em->find(Player::class, $id);
         if ($user) {
@@ -52,7 +65,7 @@ class PlayerController extends AbstractController {
                 $user->setPreferences($params);
                 $em->persist($user);
                 $em->flush();
-                return new JsonResponse('',204);
+                return new JsonResponse('', 204);
             } else return new JsonResponse($user->getPreferences());
         }
 
@@ -61,6 +74,8 @@ class PlayerController extends AbstractController {
 
     #[Route('/{id}/email', requirements:['id'=>'\d+'],  methods:['GET', 'PUT'])]
     public function playerEmail($id, ManagerRegistry $doctrine):Response {
+        if(!$this->userIsValid($id)) return new Response('', 403);
+
         $em = $doctrine->getManager();
         $user = $em->find(Player::class, $id);
         if ($user) {
@@ -75,6 +90,14 @@ class PlayerController extends AbstractController {
         }
 
         return new Response('', 404);
+    }
+
+
+    private function userIsValid($id):bool {
+        $user = $this->security->getUser();
+        return ($user->getUserIdentifier() == $id
+            && in_array('ROLE_USER', $user->getRoles())
+            || in_array('ROLE_ADMIN', $user->getRoles()));
     }
 
 

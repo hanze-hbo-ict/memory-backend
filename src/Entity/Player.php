@@ -90,6 +90,10 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
         return $roles;
     }
 
+    public function getId():int{
+        return $this->id;
+    }
+
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
@@ -97,6 +101,6 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
 
     public function getUserIdentifier(): string
     {
-        return $this->username;
+        return $this->id;
     }
 }
