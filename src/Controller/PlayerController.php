@@ -14,9 +14,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 #[Route("/player")]
+#[IsGranted('ROLE_USER')]
 class PlayerController extends AbstractController {
 
     public function __construct(
@@ -31,63 +33,63 @@ class PlayerController extends AbstractController {
 
     #[Route('/{id}', requirements:['id'=>'\d+'])]
     public function getUserData($id, ManagerRegistry $doctrine):Response {
-        if($this->userIsValid($id)) {
-            $em = $doctrine->getManager();
-            $user = $em->find(Player::class, $id);
-            if ($user) return new JsonResponse($user);
-            else return new Response('', 404);
-        } else return new Response('', 403);
+        if(!$this->userIsValid($id)) return new Response('', 403);
+
+        $em = $doctrine->getManager();
+        $user = $em->find(Player::class, $id);
+        if ($user) return new JsonResponse($user);
+        else return new Response('', 404);
     }
 
 
     #[Route('/{id}/games',  requirements:['id'=>'\d+'], methods:['GET'])]
     public function getPlayerGames($id, ManagerRegistry $doctrine):Response {
-        if($this->userIsValid($id)) {
-            $em = $doctrine->getManager();
-            $user = $em->find(Player::class, $id);
-            if ($user) return new JsonResponse($user->getGames()->toArray());
-            else return new Response('', 404);
-        } else return new Response('', 403);
+        if(!$this->userIsValid($id)) return new Response('', 403);
+
+        $em = $doctrine->getManager();
+        $user = $em->find(Player::class, $id);
+        if ($user) return new JsonResponse($user->getGames()->toArray());
+        else return new Response('', 404);
     }
 
     #[Route('/{id}/preferences', requirements:['id'=>'\d+'], methods:['GET', 'POST'])]
     public function getPlayerPreferences($id, ManagerRegistry $doctrine):Response {
-        if($this->userIsValid($id)) {
-            $em = $doctrine->getManager();
-            $user = $em->find(Player::class, $id);
-            if ($user) {
-                $request = Request::createFromGlobals();
-                if ($request->getMethod() == 'POST') {
-                    $params = json_decode(Request::createFromGlobals()->getContent(), true);
-                    $user->setPreferences($params);
-                    $em->persist($user);
-                    $em->flush();
-                    return new JsonResponse('', 204);
-                } else return new JsonResponse($user->getPreferences());
-            }
+        if(!$this->userIsValid($id)) return new Response('', 403);
 
-            return new Response('', 404);
-        } else return new Response('', 403);
+        $em = $doctrine->getManager();
+        $user = $em->find(Player::class, $id);
+        if ($user) {
+            $request = Request::createFromGlobals();
+            if ($request->getMethod() == 'POST') {
+                $params = json_decode(Request::createFromGlobals()->getContent(), true);
+                $user->setPreferences($params);
+                $em->persist($user);
+                $em->flush();
+                return new JsonResponse('', 204);
+            } else return new JsonResponse($user->getPreferences());
+        }
+
+        return new Response('', 404);
     }
 
     #[Route('/{id}/email', requirements:['id'=>'\d+'],  methods:['GET', 'PUT'])]
     public function playerEmail($id, ManagerRegistry $doctrine):Response {
-        if($this->userIsValid($id)) {
-            $em = $doctrine->getManager();
-            $user = $em->find(Player::class, $id);
-            if ($user) {
-                $request = Request::createFromGlobals();
-                if ($request->getMethod() == 'PUT') {
-                    $params = json_decode(Request::createFromGlobals()->getContent(), true);
-                    $user->email = $params['email'];
-                    $em->persist($user);
-                    $em->flush();
-                    return new JsonResponse('', 204);
-                } else return new JsonResponse($user->email);
-            }
+        if(!$this->userIsValid($id)) return new Response('', 403);
 
-            return new Response('', 404);
-        } else return new Response('', 403);
+        $em = $doctrine->getManager();
+        $user = $em->find(Player::class, $id);
+        if ($user) {
+            $request = Request::createFromGlobals();
+            if ($request->getMethod() == 'PUT') {
+                $params = json_decode(Request::createFromGlobals()->getContent(), true);
+                $user->email = $params['email'];
+                $em->persist($user);
+                $em->flush();
+                return new JsonResponse('', 204);
+            } else return new JsonResponse($user->email);
+        }
+
+        return new Response('', 404);
     }
 
 

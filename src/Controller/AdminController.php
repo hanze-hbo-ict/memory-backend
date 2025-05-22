@@ -5,13 +5,20 @@ namespace App\Controller;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Config\Framework\SerializerConfig;
 
 #[Route('/admin')]
+#[IsGranted('ROLE_ADMIN')]
 class AdminController extends AbstractController
 {
-    public function __construct(private LoggerInterface $logger) {}
+    public function __construct(
+        private LoggerInterface $logger,
+    ) {}
+
     #[Route('/aggregate', methods: ['GET'])]
     public function aggregateData(ManagerRegistry $doctrine)
     {
@@ -57,7 +64,4 @@ class AdminController extends AbstractController
 
         return new JsonResponse($cnt);
     }
-
-
-
 }
