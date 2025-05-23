@@ -55,18 +55,18 @@ Je kunt de app opstarten met behulp van de ingebouwde php server:
 php -S localhost:8000 -t public
 ```
 
-# Backend draaien met docker
+## PDO foutmelding
+
+Mocht je de foutmelding krijgen dat er een PDO-dependecy niet gevonden kan worden, dan moet je de `php.ini` aanpassen, zodat de extensies `pdo_sqlite`, `sodium`, `sqlite3` en `openssl` gevonden kunnen worden.
+Daarnaast is het op Windows van belang dat `extension_dir = "ext"` ook aangepast wordt (Door de `;` er voor weg te halen).
+
+## Backend draaien met docker
 Het is ook mogelijk om de backend the hosten in een docker-container. Om dat te starten moet het volgende commando worden uitgevoerd. Als je dit doet is het nodig om de dependencies te installeren en de database op te zetten. Je moet wel de JWT sleutels eerst aanmaken.
 ```shell
 # Bouwen en taggen image
 docker compose -f 'compose.yaml' up -d --build
 ```
-Als dit commando voltooid is, is er een container gestart die naar de poort 8000 van de localhost luisterd. Verder is de folder /var gemount in deze container zodat de database ook lokaal beschikbaar is.
-
-## PDO foutmelding
-
-Mocht je de foutmelding krijgen dat er een PDO-dependecy niet gevonden kan worden, dan moet je de `php.ini` aanpassen, zodat de extensies `pdo_sqlite`, `sodium`, `sqlite3` en `openssl` gevonden kunnen worden.
-Daarnaast is het op Windows van belang dat `extension_dir = "ext"` ook aangepast wordt (Door de `;` er voor weg te halen).
+Als dit commando voltooid is, is er een container gestart die naar de poort 8000 van de localhost luistert. Verder is de folder /var gemount in deze container zodat de database ook lokaal beschikbaar is.
 
 # Het vullen van de database
 
