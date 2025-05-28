@@ -128,19 +128,21 @@ Methode en end-point | return value | omschrijving
 
 ### ROLE_USER
 
+De `id` van de speler zit in de het JWT (de `sub`-claim). Dat `id` wordt server side uit het JWT gehaald.
+
 Methode en end-point | return value | omschrijving
 ----|----|----
-`GET /player/{id}` | 200 Ok | Alle gegevens van speler `id`
+`GET /player/` | 200 Ok | Alle gegevens van speler `id`
 " | 404 Not Found | Als de `id` niet gevonden is
-`GET /player/{id}/games` | 200 Ok | De spellen die de speler met `id` heeft gespeeld
+`GET /player/games` | 200 Ok | De spellen die de speler met `id` heeft gespeeld
 " | 404 Not Found | Als de `id` niet gevonden is
-`GET /player/{id}/preferences` | 200 Ok | De voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
+`GET /player/preferences` | 200 Ok | De voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
 " | 404 Not Found | Als de `id` niet gevonden is
-`POST /player/{id}/preferences` | 204 No Content | Aanpassen van de voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
+`POST /player/preferences` | 204 No Content | Aanpassen van de voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
 " | 404 Not Found | Als de `id` niet gevonden is
-`GET /player/{id}/email` | 200 Ok | Het email-adres van speler `id`
+`GET /player/email` | 200 Ok | Het email-adres van speler `id`
 " | 404 Not Found | Als de `id` niet gevonden is
-`PUT /player/{id}/email` | 204 No Content | Aanpassen van het email=adres van speler `id`
+`PUT /player/email` | 204 No Content | Aanpassen van het email=adres van speler `id`
 " | 404 Not Found | Als de `id` niet gevonden is
 
 ### ROLE_ADMIN
