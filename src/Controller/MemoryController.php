@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Player;
 use Doctrine\Persistence\ManagerRegistry;
+use MongoDB\Driver\Manager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,6 +31,16 @@ class MemoryController extends AbstractController
         $scores = $em->createQuery("select p.username, avg(g.score) as score from App\Entity\Player p 
                     join p.games g group by p.username")->getArrayResult();
         return new JsonResponse($scores);
+    }
+
+    #[Route('/top-scores', methods:['GET'])]
+    public function topScores(ManagerRegistry $doctrine)
+    {
+        $em = $doctrine->getManager();
+        $scores = $em->createQuery("select p.username, min(g.score) as score from App\Entity\Player p 
+                    join p.games g group by p.username order by score")->getArrayResult();
+        return new JsonResponse($scores);
+
     }
 
     #[Route('/register', methods: ['POST'])]

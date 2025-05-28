@@ -117,7 +117,8 @@ De applicatie heeft de volgende end-points. Ze spreken redelijk voor zich, maar 
 
 Methode en end-point | return value | omschrijving
 ----|----|----
-`GET memory/scores` |  200 Ok | Overzicht van de spelers en hun score (ongesorteerd)
+`GET memory/scores` |  200 Ok | Overzicht van de spelers en hun *gemiddelde* score (ongesorteerd)
+`GET memory/top-scores` | 200 Ok | Lijst van alle spelers met hun beste score (gesorteerd op score, lager is beter)
 `POST memory/register` | 201 Created | Registeren van een speler
 " | 400 Illegal Request | Als de opgestuurde gegevens niet kloppen met het model
 `POST /memory/login` | 200 Ok | Als de credentials kloppen met de speler, komt hier een JWT terug
