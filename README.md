@@ -60,6 +60,24 @@ php -S localhost:8000 -t public
 Mocht je de foutmelding krijgen dat er een PDO-dependecy niet gevonden kan worden, dan moet je de `php.ini` aanpassen, zodat de extensies `pdo_sqlite`, `sodium`, `sqlite3` en `openssl` gevonden kunnen worden.
 Daarnaast is het op Windows van belang dat `extension_dir = "ext"` ook aangepast wordt (Door de `;` er voor weg te halen).
 
+## Deprecation warnings
+
+Wanneer je deprecation warnings krijgt is het van belang om je `php.ini` goed in te stellen (op regels 485 en 502, respectievelijk):
+
+```php
+error_reporting = E_ALL & ~E_DEPRECATED
+display_errors = Off 
+```
+
+Daarna moet je symfony vertellen dat je de boel in productie hebt draaien, en niet in ontwikkeling. Zet daarvoor het onderstaande in je `.env` (vervang eventueel de waarden die er al staan):
+
+```php
+APP_ENV=prod
+APP_DEBUG=0
+```
+
+Bekijk eventueel ook [deze discussie op StackOverflow](https://stackoverflow.com/a/48869783/10974490).
+
 ## Backend draaien met docker
 Het is ook mogelijk om de backend the hosten in een docker-container. Om dat te starten moet het volgende commando worden uitgevoerd. Als je dit doet is het nodig om de dependencies te installeren en de database op te zetten. Je moet wel de JWT sleutels eerst aanmaken.
 ```shell
