@@ -13,5 +13,5 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /var
+      device: ./var
       o: bind
