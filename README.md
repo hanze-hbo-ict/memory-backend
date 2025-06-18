@@ -110,6 +110,7 @@ bestandsnaam | omschrijving
 `login_player.sh`  | Om een speler in te loggen; sla het teruggegeven jwt op in het bestand `player_token`
 `check_player.sh`  | Om het jwt van een ROLE_USER te checken
 `change_prefs.sh`  | Om de voorkeuren van een speler aan te passen
+`change_email.sh` | Om het emailadres van een speler aan te passen
 `login_admin.sh`  | Om een administrator in de loggen; sla het teruggegeven jwt op in het bestand `admin_token`
 `check_admin.sh`   | Om het jwt van een ROLE_ADMIN te checken
 `failed_login_user.sh`  | Om een speler met verkeerde credentials te checken
