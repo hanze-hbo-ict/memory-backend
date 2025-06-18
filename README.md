@@ -60,6 +60,24 @@ php -S localhost:8000 -t public
 Mocht je de foutmelding krijgen dat er een PDO-dependecy niet gevonden kan worden, dan moet je de `php.ini` aanpassen, zodat de extensies `pdo_sqlite`, `sodium`, `sqlite3` en `openssl` gevonden kunnen worden.
 Daarnaast is het op Windows van belang dat `extension_dir = "ext"` ook aangepast wordt (Door de `;` er voor weg te halen).
 
+## Deprecation warnings
+
+Wanneer je deprecation warnings krijgt is het van belang om je `php.ini` goed in te stellen (op regels 485 en 502, respectievelijk):
+
+```php
+error_reporting = E_ALL & ~E_DEPRECATED
+display_errors = Off 
+```
+
+Daarna moet je symfony vertellen dat je de boel in productie hebt draaien, en niet in ontwikkeling. Zet daarvoor het onderstaande in je `.env` (vervang eventueel de waarden die er al staan):
+
+```php
+APP_ENV=prod
+APP_DEBUG=0
+```
+
+Bekijk eventueel ook [deze discussie op StackOverflow](https://stackoverflow.com/a/48869783/10974490).
+
 ## Backend draaien met docker
 Het is ook mogelijk om de backend the hosten in een docker-container. Om dat te starten moet het volgende commando worden uitgevoerd. Als je dit doet is het nodig om de dependencies te installeren en de database op te zetten. Je moet wel de JWT sleutels eerst aanmaken.
 ```shell
@@ -72,16 +90,20 @@ Als dit commando voltooid is, is er een container gestart die naar de poort 8000
 
 Het database-schema is vrij eenvoudig van opzet: er is een tabel `player` en een tabel `game` (die op een wat ingewikkelde manier met elkaar verbonden zijn: zie [deze blog om te lezen waarom](https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table)). Check de entiteiten in `App/Entity/` om een beeld te krijgen van hoe deze twee zich tot elkaar verhouden.
 
-In de directory `create` vind je een aantal scripts (eigenlijk gewoon `cURL` calls) die je kunnen helpen met het opzetten en testen van de applicatie. Als je de server hebt draaien kun je deze scripts op de hieronder gegeven volgorde draaien om spelers en spellen aan te maken. Hierbij wordt er van uitgegaan dat de applicatie draait op `localhost:8000`. Als je het ergens anders draait, moet je vanzelfsprekend de nodige gegevens aanpassen.
+Ga in de directory `create`. Hier vind je een aantal scripts (eigenlijk gewoon `cURL` calls) die je kunnen helpen met het opzetten en testen van de applicatie. Als je de server hebt draaien kun je deze scripts op de hieronder gegeven volgorde draaien om spelers en spellen aan te maken. Hierbij wordt er van uitgegaan dat de applicatie draait op `localhost:8000`. Als je het ergens anders draait, moet je vanzelfsprekend de nodige gegevens aanpassen.
 
 bestandsnaam | omschrijving
 ----|----
 `create_users.sh`  | Om een aantal spelers in de database aan te maken
 `create_games.sh`  | Om een aantal spellen in de database op te slaan
 
-Hierna kun je checken of het inloggen werkt, door gebruik te maken van het script `login_player.sh` of `login_admin.sh`. Als je een speler of een admin inlogt, krijg je van de applicatie een JWT terug. Sla deze op in respectievelijk `player_token` en `admin_token` zodat je de onderstaande scripts kunt gebruiken om te checken of alles goed werkt. Bestudeer ook de scripts zelf om inzicht te krijgen in de API's.
+Hierna kun je checken of het inloggen werkt, door gebruik te maken van het script `login_player.sh` of `login_admin.sh`. Als je een speler of een admin inlogt, krijg je van de applicatie een JWT terug. Sla deze op in respectievelijk `player_token` en `admin_token`. Deze bestanden moeten de onderstaande inhoud hebben:
 
-In de code is hard geprogrammeerd dat de gebruiker met gebruikersnaam 'Henk' de `ROLE_ADMIN` heeft.
+```shell
+Authorisation: Bearer <jwt-token-dat-je-terugkreeg> 
+```
+
+Nu kun je de onderstaande scripts runnen om te kijken of alles werkt. Bestudeer ook de scripts zelf om inzicht te krijgen in de API's. In de code is hard geprogrammeerd dat de gebruiker met gebruikersnaam 'Henk' de `ROLE_ADMIN` heeft.
 
 bestandsnaam | omschrijving
 ----|----
@@ -117,7 +139,8 @@ De applicatie heeft de volgende end-points. Ze spreken redelijk voor zich, maar 
 
 Methode en end-point | return value | omschrijving
 ----|----|----
-`GET memory/scores` |  200 Ok | Overzicht van de spelers en hun score (ongesorteerd)
+`GET memory/scores` |  200 Ok | Overzicht van de spelers en hun *gemiddelde* score (ongesorteerd)
+`GET memory/top-scores` | 200 Ok | Lijst van alle spelers met hun beste score (gesorteerd op score, lager is beter)
 `POST memory/register` | 201 Created | Registeren van een speler
 " | 400 Illegal Request | Als de opgestuurde gegevens niet kloppen met het model
 `POST /memory/login` | 200 Ok | Als de credentials kloppen met de speler, komt hier een JWT terug
@@ -127,19 +150,21 @@ Methode en end-point | return value | omschrijving
 
 ### ROLE_USER
 
+De `id` van de speler zit in de het JWT (de `sub`-claim). Dat `id` wordt server side uit het JWT gehaald.
+
 Methode en end-point | return value | omschrijving
 ----|----|----
-`GET /player/{id}` | 200 Ok | Alle gegevens van speler `id`
+`GET /player/` | 200 Ok | Alle gegevens van speler `id`
 " | 404 Not Found | Als de `id` niet gevonden is
-`GET /player/{id}/games` | 200 Ok | De spellen die de speler met `id` heeft gespeeld
+`GET /player/games` | 200 Ok | De spellen die de speler met `id` heeft gespeeld
 " | 404 Not Found | Als de `id` niet gevonden is
-`GET /player/{id}/preferences` | 200 Ok | De voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
+`GET /player/preferences` | 200 Ok | De voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
 " | 404 Not Found | Als de `id` niet gevonden is
-`POST /player/{id}/preferences` | 204 No Content | Aanpassen van de voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
+`POST /player/preferences` | 204 No Content | Aanpassen van de voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
 " | 404 Not Found | Als de `id` niet gevonden is
-`GET /player/{id}/email` | 200 Ok | Het email-adres van speler `id`
+`GET /player/email` | 200 Ok | Het email-adres van speler `id`
 " | 404 Not Found | Als de `id` niet gevonden is
-`PUT /player/{id}/email` | 204 No Content | Aanpassen van het email=adres van speler `id`
+`PUT /player/email` | 204 No Content | Aanpassen van het email=adres van speler `id`
 " | 404 Not Found | Als de `id` niet gevonden is
 
 ### ROLE_ADMIN
