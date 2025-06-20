@@ -15,6 +15,9 @@
         button:hover { opacity: 0.8; }
         .container { padding: 16px; }
         #result { font-size:2rem; text-align:center; }
+        #result div.error { font-size:1.4rem; }
+        tt.error { color:red; }
+        div.error tt { background-color:lightgray; font-family:Menlo,monospace;}
     </style>
 </head>
 <body>
@@ -31,11 +34,12 @@
         <button id="btn" value="">Check de connectie</button>
     </form>
 
-    <p id="result"></p>
+    <div id="result"></div>
     
 </body>
 
 <script>
+    const el = document.getElementById('result')
 
     const check = () => {
         fetch('http://localhost:8000/frontend')
@@ -43,10 +47,26 @@
         .then( json => {
             console.log(json)
             let datum = new Date(json['date']).toLocaleDateString('NL-nl', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'} )
-            document.getElementById('result').innerHTML = json['message']
-            document.getElementById('result').innerHTML += `<br/>De huidige datum is ${datum}`
+            el.innerHTML = json['message']
+            el.innerHTML += `<br/>De huidige datum is ${datum}`
+        })
+        .catch(err => {
+            let html = '<div class="error">'
+            if (err instanceof TypeError) {
+                html += '<tt class="error">TypeError</tt><br>Heb je misschien de php backend opgestart zonder <tt>-t public</tt>?<br>'
+                html += 'Om de backend op te starten moet je in de root van het project <tt>php -S localhost:8000 -t public</tt> typen.'
+            }
+            if (err instanceof SyntaxError) {
+                html += '<tt class="error">SyntaxError</tt><br>Heb je misschien de frontend op dezelfde poort draaien als de backen?<br>'
+                html += 'Om de boel goed te testen moet je de backend draaien op poort 8000 en deze frontend op poort 8080.'
+            }
+            html += '</div>'
+            el.innerHTML = html
+            console.error(err)
         })
     }
+    
+
 
     check()
     document.getElementById('btn').addEventListener('click', c => check() )
