@@ -100,7 +100,7 @@ bestandsnaam | omschrijving
 Hierna kun je checken of het inloggen werkt, door gebruik te maken van het script `login_player.sh` of `login_admin.sh`. Als je een speler of een admin inlogt, krijg je van de applicatie een JWT terug. Sla deze op in respectievelijk `player_token` en `admin_token`. Deze bestanden moeten de onderstaande inhoud hebben:
 
 ```shell
-Authorisation: Bearer <jwt-token-dat-je-terugkreeg> 
+Authorization: Bearer <jwt-token-dat-je-terugkreeg> 
 ```
 
 Nu kun je de onderstaande scripts runnen om te kijken of alles werkt. Bestudeer ook de scripts zelf om inzicht te krijgen in de API's. In de code is hard geprogrammeerd dat de gebruiker met gebruikersnaam 'Henk' de `ROLE_ADMIN` heeft.
