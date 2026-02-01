@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class GameRepository extends ServiceEntityRepository
 {
+    
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Game::class);
@@ -36,16 +37,17 @@ class GameRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
+/**
      * @return array<string, int>
      */
     public function countByDate(): array
     {
-        // Use native SQL for DATE() function (SQLite compatible)
+        // Use native SQL for DATE() function (SQLite compatible)       
         $conn = $this->getEntityManager()->getConnection();
+        $tableName = $this->getClassMetadata()->getTableName();
 
         $sql = "SELECT DATE(date) as game_date, COUNT(*) as count
-                FROM games
+                FROM {$tableName}
                 GROUP BY DATE(date)
                 ORDER BY game_date";
 

@@ -19,7 +19,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 #[ApiResource]
-class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedUserInterface {
+class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedUserInterface 
+{
+    
     #[Column(unique:true)] #[Id] #[GeneratedValue] public int $id;
     #[Column(name:'name')] public string $username;
     #[Column] public string $email;

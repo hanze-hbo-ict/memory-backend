@@ -14,7 +14,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 
 #[ORM\Entity(repositoryClass: GameRepository::class)]
 #[ApiResource]
-class Game implements \JsonSerializable {
+class Game implements \JsonSerializable 
+{
 
     #[Column(unique:true)] #[Id] #[GeneratedValue] private int $id;
     #[Column(name:'date')] public \DateTime $dateTime;

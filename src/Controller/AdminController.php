@@ -11,7 +11,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
 #[IsGranted('ROLE_ADMIN')]
-class AdminController extends AbstractController
+class AdminController extends AbstractController 
 {
     public function __construct(
         private readonly GameRepository $gameRepository,
