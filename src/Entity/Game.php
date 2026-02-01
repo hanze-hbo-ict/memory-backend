@@ -7,13 +7,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToMany;
+use App\Repository\GameRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
-use phpDocumentor\Reflection\Types\True_;
 
-
-#[Entity]
+#[ORM\Entity(repositoryClass: GameRepository::class)]
 #[ApiResource]
 class Game implements \JsonSerializable {
 
