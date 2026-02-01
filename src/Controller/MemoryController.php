@@ -52,7 +52,7 @@ class MemoryController extends AbstractController
             $this->playerRepository->save($player);
 
             return new Response('', Response::HTTP_CREATED, [
-                'Location' => "/player/{$player->id}"
+                'Location' => "/player/$player->id"
             ]);
         } catch (\Exception $e) {
             return new JsonResponse([
