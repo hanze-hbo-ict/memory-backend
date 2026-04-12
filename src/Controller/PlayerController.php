@@ -19,7 +19,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/player")]
 #[IsGranted('ROLE_USER')]
-class PlayerController extends AbstractController {
+class PlayerController extends AbstractController
+{
 
     private $user_id = null;
     public function __construct(

@@ -15,7 +15,9 @@ use Symfony\Component\Validator\Constraints\Json;
 use Twig\Error\Error;
 
 #[Route("/game")]
-class GameController extends AbstractController {
+class GameController extends AbstractController 
+{
+
     #[Route('/')]
     public function index():Response {
         return new Response("GameController");
