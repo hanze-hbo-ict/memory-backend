@@ -1,6 +1,8 @@
 # Memory Backend
 
-Een php/symfony applicatie om te gebruiken voor het opslaan van spelers en spellen van het javascript memory spel. Het is de bedoeling dat je *alleen* aan de frontend werkt. We hebben die backend juist gemaakt om de situatie te simuleren waarin je als developer geen mogelijkheid hebt om een deel van de applicatie (deze backend in dit geval) zelf aan te passen. Dat gezegd hebbende is het best mogelijk dat je dingen in de backend tegenkomt die echt beter moeten. We hebben dat ding redelijk snel in elkaar gezet, dus we doen geen enkele garantie over hoe goed het is. Het staat je dus zeker vrij om dit aan te passen en een pull-request te doen.
+Een php/symfony applicatie om te gebruiken voor het opslaan van spelers en spellen van het javascript memory spel. Het is de bedoeling dat je *alleen* aan de frontend werkt. We hebben die backend juist gemaakt om de situatie te simuleren waarin je als developer geen mogelijkheid hebt om een deel van de applicatie (deze backend in dit geval) zelf aan te passen. 
+
+Dat gezegd hebbende is het best mogelijk dat je dingen in de backend tegenkomt die echt beter moeten. Het staat je zeker vrij om dit aan te passen en een pull-request te doen.
 
 We maken bij deze applicatie gebruik van [de LexikJWTAuthenticationBundle](https://github.com/lexik/LexikJWTAuthenticationBundle). Bekijk eventueel de code om te onderzoeken hoe dat ding werkt.
 
@@ -29,7 +31,7 @@ JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
 JWT_PASSPHRASE=BeeFrogFlower
 ###< lexik/jwt-authentication-bundle ### 
 ```
-Maak nu de private en publieke sleutel aan die bij de jwt gebruikt worden. Gebruik hiervoor de onderstaande code. Je zult gevraagd worden om een passphrase aan te geven; dat moet natuurlijk hetzelfde zijn als wat je hierboven in `.env` hebt ingevuld.
+Maak nu de private en publieke sleutel aan die bij de jwt gebruikt worden. Gebruik hiervoor de onderstaande code. Je zult gevraagd worden om een passphrase aan te geven; dat moet natuurlijk hetzelfde zijn als wat je hierboven in `.env` hebt ingevuld ('BeeFrogFlower' in dit voorbeeld).
 
 ```shell
 mkdir config/jwt/
@@ -49,7 +51,7 @@ Dit maakt de datbaase aan in `var/data.db` aan. Bekijk eventueel de gegenereerde
 
 ## runnen van de app
 
-Je kunt de app opstarten met behulp van de ingebouwde php server:
+Je kunt nu de app opstarten met behulp van de ingebouwde php server:
 
 ```shell
 php -S localhost:8000 -t public
@@ -90,12 +92,14 @@ Als dit commando voltooid is, is er een container gestart die naar de poort 8000
 
 Het database-schema is vrij eenvoudig van opzet: er is een tabel `player` en een tabel `game` (die op een wat ingewikkelde manier met elkaar verbonden zijn: zie [deze blog om te lezen waarom](https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table)). Check de entiteiten in `App/Entity/` om een beeld te krijgen van hoe deze twee zich tot elkaar verhouden.
 
-Ga in de directory `create`. Hier vind je een aantal scripts (eigenlijk gewoon `cURL` calls) die je kunnen helpen met het opzetten en testen van de applicatie. Als je de server hebt draaien kun je deze scripts op de hieronder gegeven volgorde draaien om spelers en spellen aan te maken. Hierbij wordt er van uitgegaan dat de applicatie draait op `localhost:8000`. Als je het ergens anders draait, moet je vanzelfsprekend de nodige gegevens aanpassen.
+Ga naar de directory `create`. Hier vind je een aantal scripts (eigenlijk gewoon `cURL` calls) die je kunnen helpen met het opzetten en testen van de applicatie. Als je de server hebt draaien kun je deze scripts op de hieronder gegeven volgorde draaien om spelers en spellen aan te maken. Hierbij wordt er van uitgegaan dat de applicatie draait op `localhost:8000`. Als je het ergens anders draait, moet je vanzelfsprekend de nodige gegevens aanpassen.
 
 bestandsnaam | omschrijving
 ----|----
 `create_users.sh`  | Om een aantal spelers in de database aan te maken
 `create_games.sh`  | Om een aantal spellen in de database op te slaan
+
+Check de gegevens in de database (in `var/data.db`).
 
 Hierna kun je checken of het inloggen werkt, door gebruik te maken van het script `login_player.sh` of `login_admin.sh`. Als je een speler of een admin inlogt, krijg je van de applicatie een JWT terug. Sla deze op in respectievelijk `player_token` en `admin_token`. Deze bestanden moeten de onderstaande inhoud hebben:
 
@@ -129,7 +133,7 @@ Om vanaf een frontend connectie te maken met deze backend is het noodzakelijk om
 
 Ga vervolgens met een browser naar `localhost:8080/`. Als het goed is zie je nu een test-pagina. Klik op de knop om de connectie te testen. Hiermee wordt een call gedaan naar `localhost:8000/frontend` die de huidige datum teruggeeft. De test-pagina toont vervolgens deze datum onder het formulier:
 
-![Check van de communicatie met de backend](frontend/demo.png)
+![Check van de communicatie met de backend](frontend/demo.jpeg)
 
 
 # End-points

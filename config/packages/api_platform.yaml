@@ -1,6 +1,11 @@
 api_platform:
-    title: Hello API Platform
+    title: Memory backend API Platform
     version: 1.0.0
+    swagger:
+        api_keys:
+            JWT:
+                name: Authorization
+                type: header
     formats:
         jsonld: ['application/ld+json']
     docs_formats:

@@ -74,4 +74,9 @@ class PlayerRepository extends ServiceEntityRepository implements PasswordUpgrad
             $this->getEntityManager()->flush();
         }
     }
+
+    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
+    {
+        // TODO: Implement upgradePassword() method.
+    }
 }
