@@ -27,6 +27,10 @@ security:
                 check_path: /memory/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        game:
+            pattern: ^/game
+            stateless: true
+            jwt: ~
         player:
             pattern: ^/player
             stateless: true

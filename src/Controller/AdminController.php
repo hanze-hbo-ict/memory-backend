@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Game;
 use App\Repository\GameRepository;
 use App\Repository\PlayerRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -38,5 +41,12 @@ class AdminController extends AbstractController
     public function players(): JsonResponse
     {
         return new JsonResponse($this->playerRepository->findAllUsernamesAndEmails());
+    }
+
+    #[Route('/games',methods:['GET'])]
+    public function getAllGames(ManagerRegistry $doctrine):Response {
+        $em = $doctrine->getManager();
+        $game_repo = $em->getRepository(Game::class);
+        return new JsonResponse($game_repo->findAll());
     }
 }

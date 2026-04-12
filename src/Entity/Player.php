@@ -65,7 +65,7 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
     public function getGames():Collection {
         $t = new ArrayCollection();
         foreach($this->games as $g) {
-            $t->add($g->jsonSerialize());
+            $t->add($g); //->jsonSerialize());
         }
         return $t;
     }

@@ -94,18 +94,15 @@ Het database-schema is vrij eenvoudig van opzet: er is een tabel `player` en een
 
 Ga naar de directory `create`. Hier vind je een aantal scripts (eigenlijk gewoon `cURL` calls) die je kunnen helpen met het opzetten en testen van de applicatie. Als je de server hebt draaien kun je deze scripts op de hieronder gegeven volgorde draaien om spelers en spellen aan te maken. Hierbij wordt er van uitgegaan dat de applicatie draait op `localhost:8000`. Als je het ergens anders draait, moet je vanzelfsprekend de nodige gegevens aanpassen.
 
-bestandsnaam | omschrijving
-----|----
-`create_users.sh`  | Om een aantal spelers in de database aan te maken
-`create_games.sh`  | Om een aantal spellen in de database op te slaan
-
-Check de gegevens in de database (in `var/data.db`).
+Run allereerst het script `create_users.sh` om een aantal (vier) spelers in de database aan te maken. 
 
 Hierna kun je checken of het inloggen werkt, door gebruik te maken van het script `login_player.sh` of `login_admin.sh`. Als je een speler of een admin inlogt, krijg je van de applicatie een JWT terug. Sla deze op in respectievelijk `player_token` en `admin_token`. Deze bestanden moeten de onderstaande inhoud hebben:
 
 ```shell
 Authorization: Bearer <jwt-token-dat-je-terugkreeg> 
 ```
+
+Run nu `create_games.sh` om een aantal games voor de admin-user (Henk) aan te maken. Check de gegevens in de database (in `var/data.db`).
 
 Nu kun je de onderstaande scripts runnen om te kijken of alles werkt. Bestudeer ook de scripts zelf om inzicht te krijgen in de API's. In de code is hard geprogrammeerd dat de gebruiker met gebruikersnaam 'Henk' de `ROLE_ADMIN` heeft.
 
@@ -138,7 +135,7 @@ Ga vervolgens met een browser naar `localhost:8080/`. Als het goed is zie je nu 
 
 # End-points
 
-De applicatie heeft de volgende end-points. Ze spreken redelijk voor zich, maar bestudeer eventueel de Controllers en [de gegenereerde documentatie](http://localhost:8000/api/docs).
+De applicatie heeft de volgende end-points. Ze spreken redelijk voor zich, maar bestudeer eventueel de Controllers in `src/Controllers\`.
 
 ### ANONYMOUS
 
@@ -150,27 +147,33 @@ Methode en end-point | return value | omschrijving
 " | 400 Illegal Request | Als de opgestuurde gegevens niet kloppen met het model
 `POST /memory/login` | 200 Ok | Als de credentials kloppen met de speler, komt hier een JWT terug
 " | 401 Unauthorized | Als de credentials niet kloppen (specifiek password niet bij username)
-`POST /game/save` | 201 Created | Opslaan van game voor speler
-" | 400 | Als request niet overeenkomt met het model
+
 
 ### ROLE_USER
 
 De `id` van de speler zit in de het JWT (de `sub`-claim). Dat `id` wordt server side uit het JWT gehaald.
 
-Methode en end-point | return value | omschrijving
-----|----|----
-`GET /player/` | 200 Ok | Alle gegevens van speler `id`
-" | 404 Not Found | Als de `id` niet gevonden is
-`GET /player/games` | 200 Ok | De spellen die de speler met `id` heeft gespeeld
-" | 404 Not Found | Als de `id` niet gevonden is
-`GET /player/preferences` | 200 Ok | De voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
-" | 404 Not Found | Als de `id` niet gevonden is
-`POST /player/preferences` | 204 No Content | Aanpassen van de voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)
-" | 404 Not Found | Als de `id` niet gevonden is
-`GET /player/email` | 200 Ok | Het email-adres van speler `id`
-" | 404 Not Found | Als de `id` niet gevonden is
-`PUT /player/email` | 204 No Content | Aanpassen van het email=adres van speler `id`
-" | 404 Not Found | Als de `id` niet gevonden is
+ Methode en end-point       | return value   | omschrijving                                                                                   
+----------------------------|----------------|------------------------------------------------------------------------------------------------
+ `GET /player/`             | 200 Ok         | Alle gegevens van speler `id`                                                                  
+ "                          | 404 Not Found  | Als de `id` niet gevonden is                                                                   
+ `GET /player/games`        | 200 Ok         | De spellen die de speler met `id` heeft gespeeld                                               
+ "                          | 404 Not Found  | Als de `id` niet gevonden is                                                                   
+ `GET /player/preferences`  | 200 Ok         | De voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten)               
+ "                          | 404 Not Found  | Als de `id` niet gevonden is                                                                   
+ `POST /player/preferences` | 204 No Content | Aanpassen van de voorkeuren van speler `id` (api en kleuren voor gesloten en gevonden kaarten) 
+ "                          | 404 Not Found  | Als de `id` niet gevonden is                                                                   
+ `GET /player/email`        | 200 Ok         | Het email-adres van speler `id`                                                                
+ "                          | 404 Not Found  | Als de `id` niet gevonden is                                                                   
+ `PUT /player/email`        | 204 No Content | Aanpassen van het email=adres van speler `id`                                                  
+ "                          | 404 Not Found  | Als de `id` niet gevonden is                                                                   
+ `GET /game/all`            | 200 Ok         | Alle spellen gespeeld door de speler in het JWT                                                
+ `GET /game/{id}`          | 200 Ok         | Spel met id `id` van de speler in het JWT
+"                          | 401 Unauthorized | Als het opgevraagde spel niet van de speler is
+"                          | 404 Not Found | Als het spel met de id niet gevonden kan worden
+`POST /game/save`          | 201 Created    | Opslaan van game voor speler in de JWT                                                                  
+ "                          | 400            | Als request niet overeenkomt met het model                                                     
+
 
 ### ROLE_ADMIN
 
@@ -179,6 +182,7 @@ Methode en end-point | return value | omschrijving
 `GET /admin/aggregate` | 200 Ok | Totaal aantal gespeelde spellen en spelers; overzicht van de gekozen api's
 `GET /admin/players` | 200 Ok | Overzicht van gebruikersnamen en email-adressen van alle spelers
 `GET /admin/dates` | 200 Ok | Totaal van het aantal gespeelde spelletjes per dag
+`GET /admin/all` | 200 Ok | Overzicht van alle gespeelde spelletjes
 
 ## Logging
 
