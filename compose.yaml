@@ -1,6 +1,6 @@
 services:
   webtech-backend:
-    build: /.
+    build: ./
     volumes:
       - webdata:/usr/src/memory-backend/var
     container_name: webtech_backend_server
