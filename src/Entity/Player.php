@@ -30,6 +30,10 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
     #[Column(nullable:true)] public string $preferred_color_closed = '';
     #[Column(nullable:true)] public string $preferred_color_found = '';
 
+    #[ORM\OneToOne(mappedBy: 'player', targetEntity: PlayerAvatar::class,
+        cascade: ['persist', 'remove'])]
+    public ?PlayerAvatar $avatar = null;
+
     #[ManyToMany(targetEntity:Game::class, cascade: ["persist"])]
     #[JoinTable(name:"player_games")]
     #[JoinColumn(name: "player_id", referencedColumnName: "id")]
@@ -76,6 +80,7 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
             'id' => $this->id,
             'name' => $this->username,
             'email' => $this->email,
+            'avatar' => $this->avatar,
             'games' => $games
         );
     }

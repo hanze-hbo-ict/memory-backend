@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Player;
 
+use App\Entity\PlayerAvatar;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
@@ -60,7 +61,7 @@ class PlayerController extends AbstractController
         if ($user) {
             $request = Request::createFromGlobals();
             if ($request->getMethod() == 'POST') {
-                $params = json_decode(Request::createFromGlobals()->getContent(), true);
+                $params = json_decode($request->getContent(), true);
                 $user->setPreferences($params);
                 $em->persist($user);
                 $em->flush();
@@ -80,7 +81,7 @@ class PlayerController extends AbstractController
         if ($user) {
             $request = Request::createFromGlobals();
             if ($request->getMethod() == 'PUT') {
-                $params = json_decode(Request::createFromGlobals()->getContent(), true);
+                $params = json_decode($request->getContent(), true);
                 $user->email = $params['email'];
                 $em->persist($user);
                 $em->flush();
@@ -90,6 +91,34 @@ class PlayerController extends AbstractController
 
         return new Response('', 404);
     }
+
+    #[Route('/avatar', methods:['GET', 'POST'])]
+    public function playerAvatar(ManagerRegistry $doctrine):Response {
+        $em = $doctrine->getManager();
+        $user = $em->find(Player::class, $this->user_id);
+
+        if ($user) {
+            $request = Request::createFromGlobals();
+            if ($request->getMethod() == 'POST') {
+                $params = json_decode($request->getContent(), true);
+                $avatar = $user->avatar;
+                if ($avatar === null) $avatar = new PlayerAvatar($user);
+
+                $avatar->setAvatar($params['avatar']);
+                $avatar->setMimeType($params['mimetype']);
+                $user->avatar = $avatar;
+
+                $em->persist($user);
+                $em->flush();
+                return new Response('', 201);
+            } else return new JsonResponse ([
+                'avatar' => $user->avatar->getAvatar(),
+                'mimetype' => $user->avatar->getMimeType()
+            ]);
+        }
+        return new Response('', 404);
+    }
+
 
 
     private function userIsValid():bool {

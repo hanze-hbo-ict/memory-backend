@@ -90,7 +90,9 @@ Als dit commando voltooid is, is er een container gestart die naar de poort 8000
 
 # Het vullen van de database
 
-Het database-schema is vrij eenvoudig van opzet: er is een tabel `player` en een tabel `game` (die op een wat ingewikkelde manier met elkaar verbonden zijn: zie [deze blog om te lezen waarom](https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table)). Check de entiteiten in `App/Entity/` om een beeld te krijgen van hoe deze twee zich tot elkaar verhouden.
+Het database-schema is vrij eenvoudig van opzet: er is een tabel `player` en een tabel `game` (die op een wat ingewikkelde manier met elkaar verbonden zijn: zie [deze blog om te lezen waarom](https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table)). 
+
+Verder is er een entiteit `PlayerAvatar`, waarin de eventuele *avatar* van de speler is opgeslagen. Er is een één-op-één-relatie tussen `Player` en `PlayerAvatar`. Check de entiteiten in `App/Entity/` om een beeld te krijgen van hoe deze twee zich tot elkaar verhouden.
 
 Ga naar de directory `create`. Hier vind je een aantal scripts (eigenlijk gewoon `cURL` calls) die je kunnen helpen met het opzetten en testen van de applicatie. Als je de server hebt draaien kun je deze scripts op de hieronder gegeven volgorde draaien om spelers en spellen aan te maken. Hierbij wordt er van uitgegaan dat de applicatie draait op `localhost:8000`. Als je het ergens anders draait, moet je vanzelfsprekend de nodige gegevens aanpassen.
 
@@ -102,7 +104,7 @@ Hierna kun je checken of het inloggen werkt, door gebruik te maken van het scrip
 Authorization: Bearer <jwt-token-dat-je-terugkreeg> 
 ```
 
-Run nu `create_games.sh` om een aantal games voor de admin-user (Henk) aan te maken. Check de gegevens in de database (in `var/data.db`).
+Run nu `create_games.sh` om een aantal games voor de admin-user en een player-user aan te maken. Check de gegevens in de database (in `var/data.db`).
 
 Nu kun je de onderstaande scripts runnen om te kijken of alles werkt. Bestudeer ook de scripts zelf om inzicht te krijgen in de API's. In de code is hard geprogrammeerd dat de gebruiker met gebruikersnaam 'Henk' de `ROLE_ADMIN` heeft.
 
@@ -112,6 +114,7 @@ bestandsnaam | omschrijving
 `check_player.sh`  | Om het jwt van een ROLE_USER te checken
 `change_prefs.sh`  | Om de voorkeuren van een speler aan te passen
 `change_email.sh` | Om het emailadres van een speler aan te passen
+`create_avatar.sh` | Om een avatar aan de speler toe te voegen (dit script maakt gebruik van het bestand `image`)
 `login_admin.sh`  | Om een administrator in de loggen; sla het teruggegeven jwt op in het bestand `admin_token`
 `check_admin.sh`   | Om het jwt van een ROLE_ADMIN te checken
 `failed_login_user.sh`  | Om een speler met verkeerde credentials te checken
@@ -127,7 +130,6 @@ php -S localhost:8080
 
 Om vanaf een frontend connectie te maken met deze backend is het noodzakelijk om de frontend in hetzelfde domein te hebben draaien als de backend; als je de frontend op een ander domein draait, of gewoon als bestand op je file-system opent, krijg je [CORS-errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).
 
-
 Ga vervolgens met een browser naar `localhost:8080/`. Als het goed is zie je nu een test-pagina. Klik op de knop om de connectie te testen. Hiermee wordt een call gedaan naar `localhost:8000/frontend` die de huidige datum teruggeeft. De test-pagina toont vervolgens deze datum onder het formulier:
 
 ![Check van de communicatie met de backend](frontend/demo.jpeg)
@@ -135,7 +137,7 @@ Ga vervolgens met een browser naar `localhost:8080/`. Als het goed is zie je nu 
 
 # End-points
 
-De applicatie heeft de volgende end-points. Ze spreken redelijk voor zich, maar bestudeer eventueel de Controllers in `src/Controllers\`.
+De applicatie heeft de volgende end-points. Ze spreken redelijk voor zich, maar bestudeer eventueel de Controllers in `src/Controllers/`.
 
 ### ANONYMOUS
 
@@ -167,6 +169,10 @@ De `id` van de speler zit in de het JWT (de `sub`-claim). Dat `id` wordt server 
  "                          | 404 Not Found  | Als de `id` niet gevonden is                                                                   
  `PUT /player/email`        | 204 No Content | Aanpassen van het email=adres van speler `id`                                                  
  "                          | 404 Not Found  | Als de `id` niet gevonden is                                                                   
+ `POST /player/avatar`      | 201 Created    | Als de avatar voor speler `id` is aangemaakt
+ "                          | 404 Not Found  | Als de speler niet gevonden is
+ `GET /player/avatar`       | 200 Ok         | De avatar als base64 geëncodeerde string (in json)
+ "                          | 404 Not Found  | Als de speler niet gevonden is
  `GET /game/all`            | 200 Ok         | Alle spellen gespeeld door de speler in het JWT                                                
  `GET /game/{id}`          | 200 Ok         | Spel met id `id` van de speler in het JWT
 "                          | 401 Unauthorized | Als het opgevraagde spel niet van de speler is
