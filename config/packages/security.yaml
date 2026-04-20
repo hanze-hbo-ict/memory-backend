@@ -40,16 +40,13 @@ security:
             stateless: true
             jwt: ~
         main:
-            pattern: ^/
-            custom_authenticators:
-                - App\Security\GithubAuthenticator
             lazy: true
             provider: users
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/memory/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-#        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        #        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/player, roles: ROLE_USER }
 #

@@ -26,7 +26,7 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
     #[Column(name:'name')] public string $username;
     #[Column] public string $email;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(nullable: true)]
     private ?string $password = null;
     #[Column(nullable:true)] public string $preferred_api = '';
     #[Column(nullable:true)] public string $preferred_color_closed = '';
@@ -45,12 +45,16 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
     #[InverseJoinColumn(name: "game_id", referencedColumnName: "id", unique:true)]
     private $games;
 
-    public function __construct(string $username, string $email, string $password_hash='')
+    public function __construct(string $username, string $email, string $password = '')
     {
         $this->username = $username;
         $this->email = $email;
-        if ($password_hash!='') $this->password_hash = $password_hash;
+        if (!empty($password)) $this->password = $password;
         $this->games = new ArrayCollection();
+    }
+
+    public function setPasswordHash(string $pw): void {
+        $this->password = $pw;
     }
 
     public function addGame(Game $game) {
