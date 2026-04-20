@@ -53,9 +53,19 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
         $this->games = new ArrayCollection();
     }
 
-    public function setPasswordHash(string $pw): void {
+    public function setPassword(string $pw): void {
         $this->password = $pw;
     }
+
+    public function getPassword(): ?string
+    {
+        return $this->password ?? '';
+    }
+
+    public function setGithubId(string $githubId): void {
+        $this->githubId = $githubId;
+    }
+
 
     public function addGame(Game $game) {
         $this->games[] = $game;
@@ -94,10 +104,7 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
         );
     }
 
-    public function getPassword(): ?string
-    {
-        return $this->password ?? '';
-    }
+
 
     public function getRoles(): array
     {

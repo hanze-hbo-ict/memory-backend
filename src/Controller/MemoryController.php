@@ -48,7 +48,7 @@ class MemoryController extends AbstractController
             $params = json_decode($request->getContent(), true);
             $pw = password_hash($params['password'], PASSWORD_DEFAULT);
             $player = new Player($params['username'], $params['email']);
-            $player->setPasswordHash($pw);
+            $player->setPassword($pw);
             $this->playerRepository->save($player);
 
             return new Response('', Response::HTTP_CREATED, [

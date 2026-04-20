@@ -54,6 +54,7 @@ class GithubAuthenticator extends OAuth2Authenticator
                 if (!$player) {
                     // First-time login → create user
                     $player = new Player($name, $email);
+                    $player->setGithubId($githubId);
 
                     $this->entityManager->persist($player);
                     $this->entityManager->flush();
