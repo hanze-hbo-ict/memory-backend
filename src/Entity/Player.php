@@ -45,11 +45,11 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
     #[InverseJoinColumn(name: "game_id", referencedColumnName: "id", unique:true)]
     private $games;
 
-    public function __construct(string $username, string $email, string $password = '')
+    public function __construct(string $username, string $email)
     {
         $this->username = $username;
         $this->email = $email;
-        if (!empty($password)) $this->password = $password;
+//        if (!empty($password)) $this->password = $password;
         $this->games = new ArrayCollection();
     }
 
@@ -96,7 +96,7 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
 
     public function getPassword(): ?string
     {
-        return $this->password_hash ?? '';
+        return $this->password ?? '';
     }
 
     public function getRoles(): array

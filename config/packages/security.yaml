@@ -40,6 +40,9 @@ security:
             stateless: true
             jwt: ~
         main:
+            pattern: ^/
+            custom_authenticators:
+                - App\Security\GithubAuthenticator
             lazy: true
             provider: users
     # Easy way to control access for large sections of your site
