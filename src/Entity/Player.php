@@ -25,10 +25,15 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
     #[Column(unique:true)] #[Id] #[GeneratedValue] public int $id;
     #[Column(name:'name')] public string $username;
     #[Column] public string $email;
-    #[Column] public string $password_hash;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $password = null;
     #[Column(nullable:true)] public string $preferred_api = '';
     #[Column(nullable:true)] public string $preferred_color_closed = '';
     #[Column(nullable:true)] public string $preferred_color_found = '';
+
+    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
+    private ?string $githubId = null;
 
     #[ORM\OneToOne(mappedBy: 'player', targetEntity: PlayerAvatar::class,
         cascade: ['persist', 'remove'])]
@@ -40,11 +45,11 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
     #[InverseJoinColumn(name: "game_id", referencedColumnName: "id", unique:true)]
     private $games;
 
-    public function __construct(string $username, string $email, string $password_hash)
+    public function __construct(string $username, string $email, string $password_hash='')
     {
         $this->username = $username;
         $this->email = $email;
-        $this->password_hash = $password_hash;
+        if ($password_hash!='') $this->password_hash = $password_hash;
         $this->games = new ArrayCollection();
     }
 
@@ -87,7 +92,7 @@ class Player implements \JsonSerializable, UserInterface, PasswordAuthenticatedU
 
     public function getPassword(): ?string
     {
-        return $this->password_hash;
+        return $this->password_hash ?? '';
     }
 
     public function getRoles(): array

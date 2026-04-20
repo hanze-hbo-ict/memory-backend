@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Player;
 use Doctrine\Persistence\ManagerRegistry;
+use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -24,5 +25,18 @@ class DefaultController extends AbstractController
         $rv['message'] = 'Welkom bij de memory backend api.';
         $rv['date'] = date("F j, Y, g:i a");
         return new JsonResponse($rv);
+    }
+
+    #[Route('/connect/github', name: 'connect_github')]
+    public function connect(ClientRegistry $clientRegistry)
+    {
+        return $clientRegistry
+            ->getClient('github')
+            ->redirect(['user:email'], []);
+    }
+
+    #[Route('/connect/github/check', name: 'connect_github_check')]
+    public function connectCheck(Request $request)
+    {
     }
 }
