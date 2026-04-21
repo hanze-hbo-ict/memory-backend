@@ -57,12 +57,12 @@ Je kunt nu de app opstarten met behulp van de ingebouwde php server:
 php -S localhost:8000 -t public
 ```
 
-## PDO foutmelding
+### PDO foutmelding
 
 Mocht je de foutmelding krijgen dat er een PDO-dependecy niet gevonden kan worden, dan moet je de `php.ini` aanpassen, zodat de extensies `pdo_sqlite`, `sodium`, `sqlite3` en `openssl` gevonden kunnen worden.
 Daarnaast is het op Windows van belang dat `extension_dir = "ext"` ook aangepast wordt (Door de `;` er voor weg te halen).
 
-## Deprecation warnings
+### Deprecation warnings
 
 Wanneer je deprecation warnings krijgt is het van belang om je `php.ini` goed in te stellen (op regels 485 en 502, respectievelijk):
 
@@ -119,7 +119,7 @@ bestandsnaam | omschrijving
 `check_admin.sh`   | Om het jwt van een ROLE_ADMIN te checken
 `failed_login_user.sh`  | Om een speler met verkeerde credentials te checken
 
-## Connectie maken vanaf een frontend
+# Connectie maken vanaf een frontend
 
 In deze repository vind je ook een directory `frontend`, met daarin één pagina: `index.html`. Deze pagina kun je gebruiken om je setup te checken. Start in deze directory een locale server op die naar een *andere poort* dan de backend zelf luistert (bijvoorbeeld poort 8080).
 
@@ -133,6 +133,28 @@ Om vanaf een frontend connectie te maken met deze backend is het noodzakelijk om
 Ga vervolgens met een browser naar `localhost:8080/`. Als het goed is zie je nu een test-pagina. Klik op de knop om de connectie te testen. Hiermee wordt een call gedaan naar `localhost:8000/frontend` die de huidige datum teruggeeft. De test-pagina toont vervolgens deze datum onder het formulier:
 
 ![Check van de communicatie met de backend](frontend/demo.jpeg)
+
+# Login met github
+Behalve met username/password ondersteunt de backend ook een login met github. Om dit aan de praat te krijgen moet je de volgende stappen ondernemen.
+
+1. Registreer de app bij github.
+
+Log in bij github en ga naar `Settings -> Developer Settings` (links helemaal onderaan). Selecteer `OAuth Apps -> new Oauth App`. Je krijgt nu een scherm waarin je de gegevens van je applicatie moet invoeren. Het belangrijkste hiervan is het veld 'Authorization Callback URL': hier moet je de url invullen waar github de client naartoe terugstuurt wanneer de authorisatie is gelukt.
+
+Dit komt redelijk precies. Volgens [de RFC](https://www.rfc-editor.org/rfc/rfc8252#section-7.3) moet je hier het IP-adres invoeren (dus niet localhost) plus de poort waar de app op draait (8000 in dit voorbeeld). Het pad is in dit geval `connect/github/check`, dus in het veld vul je 'http://127.0.0.1:8000/connect/github/check' in.
+
+2. ClientID en Client Secrets
+Als je op 'Register app' klikt, krijg je een *Client ID* te zien. Behalve deze code, heb ik ook een *Client Secret* nodig. Klik hiervoor op de knop 'Generate a new client secret'. Kopieer zowel het nu gegenereerde *Client Secret* en de *Client ID* in je `.env`:
+
+```shell
+###> knpu_oauth
+OAUTH_GITHUB_ID=<CLIENT-ID> 
+OAUTH_GITHUB_SECRET=<CLIENT-SECRET>
+###< knpu_oauth
+```
+
+3. Opnieuw opstarten
+Start de backend nu opnieuw op (gebruik `127.0.0.1` in plaats van `localhost`) en ga met je browser naar `http://127.0.0.1:8000/connect/github/`. Als het goed is, wordt je naar github doorverwezen, waarin je je je inloggegevens moet invullen. Als je dat doet, wordt je browser weer doorverwezen naar de backend zelf en krijg je een JWT terug.
 
 
 # End-points
@@ -149,6 +171,8 @@ Methode en end-point | return value | omschrijving
 " | 400 Illegal Request | Als de opgestuurde gegevens niet kloppen met het model
 `POST /memory/login` | 200 Ok | Als de credentials kloppen met de speler, komt hier een JWT terug
 " | 401 Unauthorized | Als de credentials niet kloppen (specifiek password niet bij username)
+`GET connect/github` | 304 Redirect | Stuurt je door naar Github (zie hierboven)
+`GET connect/github/check` | 304 Redirect | Als je deze url direct aanspreekt wordt je doorverwezen naar `connect/github`
 
 
 ### ROLE_USER
@@ -182,6 +206,8 @@ De `id` van de speler zit in de het JWT (de `sub`-claim). Dat `id` wordt server 
 
 
 ### ROLE_ADMIN
+
+In de backend is hard gecodeerd dat de speler met gebruikersnaam 'Henk' een `ROLE_ADMIN` heeft.
 
 Methode en end-point | return value | omschrijving
 ----|----|----

@@ -9,6 +9,7 @@ use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -34,25 +35,18 @@ class GithubAuthenticator extends OAuth2Authenticator
     public function authenticate(Request $request): Passport
     {
         $client = $this->clientRegistry->getClient('github');
-
-        // Step 1: fetch access token
         $accessToken = $this->fetchAccessToken($client);
 
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function () use ($client, $accessToken) {
-
-                // Step 2: fetch GitHub user
                 $githubUser = $client->fetchUserFromToken($accessToken);
 
                 $githubId = $githubUser->getId();
                 $email = $githubUser->getEmail();
                 $name = $githubUser->getName();
 
-                // Step 3: resolve to your User entity
                 $player = $this->playerRepository->findOneBy(['githubId' => $githubId]);
-
                 if (!$player) {
-                    // First-time login → create user
                     $player = new Player($name, $email);
                     $player->setGithubId($githubId);
 
@@ -76,6 +70,6 @@ class GithubAuthenticator extends OAuth2Authenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        return new RedirectResponse('/');
+        return new RedirectResponse('/connect/github');
     }
 }
