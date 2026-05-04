@@ -23,6 +23,12 @@ class MemoryController extends AbstractController
         return new Response('MemoryController');
     }
 
+    #[Route('/login', methods: ['OPTIONS'])]
+    public function preflight(Request $request): Response {
+        header("Access-Control-Allow-Origin: *");
+        return new Response();
+    }
+
     #[Route('/login', methods: ['POST'])]
     public function login(): Response
     {
