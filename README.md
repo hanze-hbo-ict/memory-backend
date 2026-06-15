@@ -168,7 +168,7 @@ Als je een 500 error krijgt nadat je vanaf github bent teruggestuurd naar `conne
 
 Sowieso moet je [`openssl`](https://www.openssl.org/) geïnstalleerd hebben en aan je pad hebben toegevoegd, maar dat had je al nodig voor [het aanmaken van de publieke en private sleutels](#opzetten-van-de-jwt). Verder moet je in je `php.ini` aangeven dat de openssl-extensie aanstaat – check eventueel met `php -i | grep php.ini` om te zien welk ini-bestand op dit moment gebruikt wordt. In dit bestand staat ergens `extension=openssl`; vergewis je ervan dat er vóóraan die zin geen puntkomma staat.
 
-Mocht het dan nóg niet werken en je zit op windows, download dan [het bestand `cacert.pem`](https://curl.haxx.se/ca/cacert.pem). In je `php.ini` vind je stukje over `curl`, met daarin de directive `curl.cainfo=` (bij mij zit dat op regel 1842). Geef hier het *volledige pad* naar het `cacert.pem`-bestand dat je zojuist hebt gedownload. Start de hele boel opnieuw op.
+Mocht het dan nóg niet werken en je zit op windows, download dan [het bestand `cacert.pem`](https://curl.haxx.se/ca/cacert.pem). In je `php.ini` vind je stukje over `curl`, met daarin de directive `curl.cainfo=` (bij mij zit dat op regel 1842). Geef hier het *volledige pad* naar het `cacert.pem`-bestand dat je zojuist hebt gedownload. Start de hele boel opnieuw op en clear de cache met `php bin/console cache:clear --env=prod`.
 
 Bekijk eventueel [deze discussie op github](https://github.com/guzzle/guzzle/issues/1935#issuecomment-562846444).
 
