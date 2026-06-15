@@ -6,18 +6,20 @@ Dat gezegd hebbende is het best mogelijk dat je dingen in de backend tegenkomt d
 
 We maken bij deze applicatie gebruik van [de LexikJWTAuthenticationBundle](https://github.com/lexik/LexikJWTAuthenticationBundle). Bekijk eventueel de code om te onderzoeken hoe dat ding werkt.
 
-# Installatie en opstarten
+# Installatie en afhankelijkheden
 
-Clone deze repository ergens op je lokale machine (dus NIET in de cloud). De afhankelijkheden in van het project staan, zoals te doen gebruikelijk, in het bestand `package.json`. Installeer deze afhankelijkheden met behulp van [composer](https://getcomposer.org/):
+Clone deze repository ergens op je lokale machine (dus NIET in de cloud). De afhankelijkheden in van het project staan, zoals te doen gebruikelijk, in het bestand `package.json`. Behalve de min of meer normale afhankelijkheden maakt de backend gebruik van [sqlite3](https://sqlite.org/index.html) als database-engine, [doctrine](https://www.doctrine-project.org/) als ORM en [lexik/jwt](https://symfony.com/bundles/LexikJWTAuthenticationBundle/current/index.html) voor het JWT-gedeelte. 
+
+Installeer deze afhankelijkheden met behulp van [composer](https://getcomposer.org/):
 
 ```shell
 # installatie van de dependencies
 php composer.phar install #of composer install
 ```
 
-## Opzetten van de jwt
+# Opzetten van de jwt
 
-De applicatie maakt gebruik van een [sqlite3 database](https://sqlite.org/index.html), [lexik/jwt](https://symfony.com/bundles/LexikJWTAuthenticationBundle/current/index.html) en [doctrine](https://www.doctrine-project.org/). Voor het werken met JWT is het noodzakelijk dat je een goed *passphrase* bedenk, waarmee de tokens gekruid (*gesalt*) kunnen worden. Check het bestand `.env` en pas eventueel de gegevens volgens de onderstaande gegevens aan (in de code hieronder gebruiken we 'BeeFrogFlower' als passphrase):
+Voor het werken met JWT is het noodzakelijk dat je een goed *passphrase* bedenk, waarmee de tokens gekruid (*gesalt*) kunnen worden. Check het bestand `.env` en pas eventueel de gegevens volgens de onderstaande gegevens aan (in de code hieronder gebruiken we 'BeeFrogFlower' als passphrase):
 
 ```shell
 DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
@@ -31,6 +33,8 @@ JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
 JWT_PASSPHRASE=BeeFrogFlower
 ###< lexik/jwt-authentication-bundle ### 
 ```
+Voor het werken met jwt heb je [`openssl`](https://www.openssl.org/) nodig, dus installeer dit als je dat nog niet hebt gedaan. Om de boel goed te laten werken is het essentieel dat `openssl` in je pad zit, dus pas dit aan als dit niet zo is – je kunt dit door in een terminal `openssl -v` in te typen
+
 Maak nu de private en publieke sleutel aan die bij de jwt gebruikt worden. Gebruik hiervoor de onderstaande code. Je zult gevraagd worden om een passphrase aan te geven; dat moet natuurlijk hetzelfde zijn als wat je hierboven in `.env` hebt ingevuld ('BeeFrogFlower' in dit voorbeeld).
 
 ```shell
@@ -39,7 +43,7 @@ openssl genrsa -out config/jwt/private.pem -aes256 4096
 openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
 ```
 
-## opzetten van de database
+# Opzetten van de database
 
 Voor de database maken we gebruik van doctrine; de entity-klassen vind je in `src/Entity/` (je verwacht het niet). Maak aan de hand hiervan de database aan:
 
@@ -49,7 +53,7 @@ php bin/console doctrine:schema:update --force --complete
 
 Dit maakt de datbaase aan in `var/data.db` aan. Bekijk eventueel de gegenereerde database met behulp van sqlite3.
 
-## runnen van de app
+# runnen van de app
 
 Je kunt nu de app opstarten met behulp van de ingebouwde php server:
 
@@ -82,10 +86,12 @@ Bekijk eventueel ook [deze discussie op StackOverflow](https://stackoverflow.com
 
 ## Backend draaien met docker
 Het is ook mogelijk om de backend the hosten in een docker-container. Om dat te starten moet het volgende commando worden uitgevoerd. Als je dit doet is het nodig om de dependencies te installeren en de database op te zetten. Je moet wel de JWT sleutels eerst aanmaken.
+
 ```shell
 # Bouwen en taggen image
 docker compose -f 'compose.yaml' up -d --build
 ```
+
 Als dit commando voltooid is, is er een container gestart die naar de poort 8000 van de localhost luistert. Verder is de folder /var gemount in deze container zodat de database ook lokaal beschikbaar is.
 
 # Het vullen van de database
@@ -106,7 +112,7 @@ Authorization: Bearer <jwt-token-dat-je-terugkreeg>
 
 Run nu `create_games.sh` om een aantal games voor de admin-user en een player-user aan te maken. Check de gegevens in de database (in `var/data.db`).
 
-Nu kun je de onderstaande scripts runnen om te kijken of alles werkt. Bestudeer ook de scripts zelf om inzicht te krijgen in de API's. In de code is hard geprogrammeerd dat de gebruiker met gebruikersnaam 'Henk' de `ROLE_ADMIN` heeft.
+Nu kun je de onderstaande scripts runnen om te kijken of alles werkt. Bestudeer ook de scripts zelf om inzicht te krijgen in de API's. In de code is hard geprogrammeerd dat de gebruiker met gebruikersnaam 'Henk' de `ROLE_ADMIN` heeft 😎.
 
 bestandsnaam | omschrijving
 ----|----
@@ -156,6 +162,15 @@ OAUTH_GITHUB_SECRET=<CLIENT-SECRET>
 3. Opnieuw opstarten
 Start de backend nu opnieuw op (gebruik `127.0.0.1` in plaats van `localhost`) en ga met je browser naar `http://127.0.0.1:8000/connect/github/`. Als het goed is, wordt je naar github doorverwezen, waarin je je je inloggegevens moet invullen. Als je dat doet, wordt je browser weer doorverwezen naar de backend zelf en krijg je een JWT terug.
 
+### 500 error
+
+Als je een 500 error krijgt nadat je vanaf github bent teruggestuurd naar `connect/github/check` is het waarschijnlijk dat er wat infrastructuur niet goed is opgezet.
+
+Sowieso moet je [`openssl`](https://www.openssl.org/) geïnstalleerd hebben en aan je pad hebben toegevoegd, maar dat had je al nodig voor [het aanmaken van de publieke en private sleutels](#opzetten-van-de-jwt). Verder moet je in je `php.ini` aangeven dat de openssl-extensie aanstaat – check eventueel met `php -i | grep php.ini` om te zien welk ini-bestand op dit moment gebruikt wordt. In dit bestand staat ergens `extension=openssl`; vergewis je ervan dat er vóóraan die zin geen puntkomma staat.
+
+Mocht het dan nóg niet werken en je zit op windows, download dan [het bestand `cacert.pem`](https://curl.haxx.se/ca/cacert.pem). In je `php.ini` vind je stukje over `curl`, met daarin de directive `curl.cainfo=` (bij mij zit dat op regel 1842). Geef hier het *volledige pad* naar het `cacert.pem`-bestand dat je zojuist hebt gedownload. Start de hele boel opnieuw op.
+
+Bekijk eventueel [deze discussie op github](https://github.com/guzzle/guzzle/issues/1935#issuecomment-562846444).
 
 # End-points
 
