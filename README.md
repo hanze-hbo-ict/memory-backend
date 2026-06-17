@@ -150,7 +150,8 @@ Log in bij github en ga naar `Settings -> Developer Settings` (links helemaal on
 Dit komt redelijk precies. Volgens [de RFC](https://www.rfc-editor.org/rfc/rfc8252#section-7.3) moet je hier het IP-adres invoeren (dus niet localhost) plus de poort waar de app op draait (8000 in dit voorbeeld). Het pad is in dit geval `connect/github/check`, dus in het veld vul je 'http://127.0.0.1:8000/connect/github/check' in.
 
 2. ClientID en Client Secrets
-Als je op 'Register app' klikt, krijg je een *Client ID* te zien. Behalve deze code, heb ik ook een *Client Secret* nodig. Klik hiervoor op de knop 'Generate a new client secret'. Kopieer zowel het nu gegenereerde *Client Secret* en de *Client ID* in je `.env`:
+
+Als je op 'Register app' klikt, krijg je een *Client ID* te zien. Behalve deze code, heb je ook een *Client Secret* nodig. Klik hiervoor op de knop 'Generate a new client secret'. Kopieer zowel het nu gegenereerde *Client Secret* en de *Client ID* in je `.env`:
 
 ```shell
 ###> knpu_oauth
@@ -160,7 +161,8 @@ OAUTH_GITHUB_SECRET=<CLIENT-SECRET>
 ```
 
 3. Opnieuw opstarten
-Start de backend nu opnieuw op (gebruik `127.0.0.1` in plaats van `localhost`) en ga met je browser naar `http://127.0.0.1:8000/connect/github/`. Als het goed is, wordt je naar github doorverwezen, waarin je je je inloggegevens moet invullen. Als je dat doet, wordt je browser weer doorverwezen naar de backend zelf en krijg je een JWT terug.
+
+Start de backend nu opnieuw op (gebruik het ip-adres, bijvoorbeeld `127.0.0.1`, in plaats van `localhost`) en ga met je browser naar `http://127.0.0.1:8000/connect/github/`. Als het goed is, wordt je naar github doorverwezen, waarin je je je inloggegevens moet invullen. Als je dat doet, wordt je browser weer doorverwezen naar de backend zelf en krijg je een JWT terug.
 
 ### 500 error
 
@@ -192,7 +194,7 @@ Methode en end-point | return value | omschrijving
 
 ### ROLE_USER
 
-De `id` van de speler zit in de het JWT (de `sub`-claim). Dat `id` wordt server side uit het JWT gehaald.
+De `id` van de speler zit in het JWT (de `sub`-claim). Dat `id` wordt server side uit het JWT gehaald. Mocht je een request doen naar een resource die geen eigendom is van de betreffende speler, krijg je in alle gevallen een `401 Unauthorized` terug.
 
  Methode en end-point       | return value   | omschrijving                                                                                   
 ----------------------------|----------------|------------------------------------------------------------------------------------------------
@@ -222,7 +224,8 @@ De `id` van de speler zit in de het JWT (de `sub`-claim). Dat `id` wordt server 
 
 ### ROLE_ADMIN
 
-In de backend is hard gecodeerd dat de speler met gebruikersnaam 'Henk' een `ROLE_ADMIN` heeft.
+Zoals eerder gemeld is in de backend hard gecodeerd dat de speler met gebruikersnaam 'Henk' een `ROLE_ADMIN` heeft 😎.
+
 
 Methode en end-point | return value | omschrijving
 ----|----|----
