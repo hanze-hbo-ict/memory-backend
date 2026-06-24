@@ -162,7 +162,14 @@ OAUTH_GITHUB_SECRET=<CLIENT-SECRET>
 
 3. Opnieuw opstarten
 
-Start de backend nu opnieuw op (gebruik het ip-adres, bijvoorbeeld `127.0.0.1`, in plaats van `localhost`) en ga met je browser naar `http://127.0.0.1:8000/connect/github/`. Als het goed is, wordt je naar github doorverwezen, waarin je je je inloggegevens moet invullen. Als je dat doet, wordt je browser weer doorverwezen naar de backend zelf en krijg je een JWT terug.
+Start de backend nu opnieuw op (gebruik het ip-adres, bijvoorbeeld `127.0.0.1`, in plaats van `localhost`) en ga met je browser naar `http://127.0.0.1:8000/connect/github/`. Als het goed is, wordt je naar github doorverwezen, waarin je je je inloggegevens moet invullen. 
+
+4. Redirect met een JWT
+
+Als je je gegevens hebt ingevuld, wordt je browser doorverwezen naar de url `http://localhost:8080/github-callback.html`, waarbij het jwt als query-parameter wordt meegegeven. Je zult dit bestand in je memory-frontend moeten maken. Feitelijk bestaat dit bestand alleen uit een stukje javascript dat het token uit de URL haalt, dit opslaat in de localStorage en de browser weer doorstuurt naar `/` (of wat je maar wilt).
+
+Als je de url echt wilt aanpassen, kun je dat doen in de methode `onAuthenticationSuccess` van de klasse `src/Security/GithubAuthenticator`.
+
 
 ### 500 error
 

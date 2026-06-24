@@ -63,9 +63,9 @@ class GithubAuthenticator extends OAuth2Authenticator
     {
         $player = $token->getUser();
         $jwt = $this->jwtManager->create($player);
-        return new JsonResponse([
-            'token' => $jwt,
-        ]);
+        return new RedirectResponse(
+            'http://localhost:8080/github-callback.html?token=' . urlencode($jwt)
+        );
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
