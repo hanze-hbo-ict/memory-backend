@@ -239,7 +239,7 @@ Methode en end-point | return value | omschrijving
 `GET /admin/aggregate` | 200 Ok | Totaal aantal gespeelde spellen en spelers; overzicht van de gekozen api's
 `GET /admin/players` | 200 Ok | Overzicht van gebruikersnamen en email-adressen van alle spelers
 `GET /admin/dates` | 200 Ok | Totaal van het aantal gespeelde spelletjes per dag
-`GET /admin/all` | 200 Ok | Overzicht van alle gespeelde spelletjes
+`GET /admin/games` | 200 Ok | Overzicht van alle gespeelde spelletjes
 
 ## Logging
 
